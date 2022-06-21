@@ -1,20 +1,17 @@
-PEG_SYS
-Set of Apex schedulable tools to generate various interesting metrics / data for platform monitoring and CRM Analytics data feed.
-
 ---
 # PEG SYS Components
 ---
 
 ## Introduction
 
-The SYS package aims primarily at generating various Org monitoring data to be used either locally
+The **PEG_SYS** package aims primarily at generating various Org monitoring data to be used either locally
 (via standard reports and dashboards) or aggregation within CRM Analytics (e.g. in case of multi-Org
 connections). Via a set of schedulable Apex tools, it enables to take periodic snapshots of
 * **Org limits** via the standard **[OrgLimit](https://developer.salesforce.com/docs/atlas.en-us.238.0.apexref.meta/apexref/apex_class_System_OrgLimit.htm)** Apex class
 * **Org Storage** via the standard **Storage Usage** Setup page (accessible from the **System Overview** setup page)
 
-It stores snapshot data in custom object records and automatically purges old ones based on a configurable 
-duration.
+It stores snapshot data in custom object records (`CreationDate` corresponding to the snapshot timestamp) and
+automatically purges old ones based on a configurable duration.
 
 It also addresses issues specific to **CRM Analytics**, such as:
 * **Picklist Values** extraction for code-to-label picklist value mapping in DataFlows/Recipes (only the current
