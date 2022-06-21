@@ -92,7 +92,7 @@ Snapshots may then be scheduled via the standard `Schedule Apex` button displaye
 
 Snapshot data may be easily aggregated in a **CRM Analytics** instance from multiple Salesforce Org by
 * fetching the custom object records via `sfdcDigest` or `digest` nodes
-* compute an additional Org name and record Unique ID via `compute` nodes
+* compute additional Org name and record Unique ID fields via `compute` nodes
 * aggregate the records in a single dataset via an `append` node
 * register it via a final `register` node
 
