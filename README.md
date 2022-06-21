@@ -86,3 +86,17 @@ picklist fields to consider (the label of which should be in the `ObjectApiName.
 
 Snapshots may then be scheduled via the standard `Schedule Apex` button displayed in the
 **Apex Classes** Setup page.
+
+
+## CRM Analytics Aggregation
+
+Snapshot data may be easily aggregated in a **CRM Analytics** instance from multiple Salesforce Org by
+* fetching the custom object records via `sfdcDigest` or `digest` nodes
+* compute an additional Org name and record Unique ID via `compute` nodes
+* aggregate the records in a single dataset via an `append` node
+* register it via a final `register` node
+
+![Data Aggregation DataFlow](/media/DataAggregation.png)
+
+Such a DataFlow (may also be done in a Recipe) may be extended to manage longer term historisation in
+**CRM Analytics** (e.g. by keeping only 10 day sliding window in the Salesforce Orgs).
