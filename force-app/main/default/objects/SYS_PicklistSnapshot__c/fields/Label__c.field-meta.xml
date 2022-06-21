@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Label__c</fullName>
+    <description>Label of a picklist field value (depends on the language of the User running the tool)</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Label of a picklist field value (depends on the language of the User running the tool)</inlineHelpText>
+    <label>Label</label>
+    <length>50</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
