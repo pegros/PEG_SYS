@@ -24,15 +24,15 @@ It also addresses issues specific to **CRM Analytics**, such as:
 
 ###  **Org limits**
 
-[!Org Limit Example](/media/OrgLimit.png)
+![Org Limit Example](/media/OrgLimit.png)
 
 ### **Org Storage**
 
-[!Org Limit Example](/media/OrgStorage.png)
+![Org Limit Example](/media/OrgStorage.png)
 
 ### **Picklist Values**
 
-[!Picklist Example](/media/Picklist.png)
+![Picklist Example](/media/Picklist.png)
 
 
 ## Package Content
