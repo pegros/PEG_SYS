@@ -234,6 +234,10 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
                 //System.debug('extractLong: managing GB');
                 value = value * 1024 * 1024 * 1024;
             }
+            else if (valueParts[1] == 'TB') {
+                //System.debug('extractLong: managing TB');
+                value = value * 1024 * 1024 * 1024 * 1024;
+            }
         }
         else {
             //System.debug('extractLong: baseline conversion ' + valueStr.replace(',','.').replace(' ','').trim());
