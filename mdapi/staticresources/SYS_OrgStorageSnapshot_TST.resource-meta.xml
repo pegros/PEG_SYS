@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
-    <cacheControl>Private</cacheControl>
-    <contentType>text/html</contentType>
-    <description>Test data for the SYS_OrgStorageSnapshot_SCH_TST class</description>
-</StaticResource>

@@ -73,184 +73,202 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
     ***/
     public static void execute(SchedulableContext context) {
         System.debug('execute: START SYS_OrgStorageSnapshot_SCH');
+        System.enqueueJob(new SYS_OrgStorageSnapshot_QUE());
+        System.debug('execute: END SYS_OrgStorageSnapshot_SCH / queueable enqueued');
+    }
 
-        PageReference pageRef = new PageReference(
-            '/setup/org/orgstorageusage.jsp?id='
-            + UserInfo.getOrganizationId()
-            + '&setupid=CompanyResourceDisk&appLayout=setup&tour=&isdtp=p1');
-        String snapshotContent;
-        if (Test.isRunningTest()) {
-            snapshotContent = TEST_PAGE_CONTENT;
-            System.debug('execute: default test snapshot Content used ' + snapshotContent?.length());
-        }
-        else {
-            snapshotContent = (PageRef.getContent()).toString();
-            System.debug('execute: snapshot Content fetched with length ' + snapshotContent.length());
-        }
+    /***
+    * @description  Queueable subclass implemented to work around the limitation on
+    *               schedulable classes preventing any callout within their execution.
+    *               Getting the content of the standard "Org Storage Usage" setup page
+    *               indeed represents an implicit callout. 
+    ***/
+    public class SYS_OrgStorageSnapshot_QUE implements Queueable, Database.AllowsCallouts {
+    
+        /*public SYS_OrgStorageSnapshot_QUE() {
+        }*/
+    
+        public void execute(QueueableContext context) {
+            System.debug('execute: START SYS_OrgStorageSnapshot_QUE');
 
-        List<SYS_OrgStorageSnapshot__c> newSnapshots = new List<SYS_OrgStorageSnapshot__c>();
-        Matcher sectionMatcher = PATTERN_SECTION.matcher(snapshotContent);
-        while (sectionMatcher.find()) {
-            String sectionString = (sectionMatcher.group(1)); 
-            //System.debug('execute: section matched ' + sectionString);
-            System.debug('execute: processing section');
-
-            Matcher titleMatcher = PATTERN_TITLE.matcher(sectionString);
-            String sectionTitle =  'Overall Situation';
-            Boolean isGlobalSituation = true;
-            if (titleMatcher.find()) {
-                System.debug('execute: title matched');
-                System.debug('execute: title match value ' +  titleMatcher.group());
-                sectionTitle = titleMatcher.group(1);
-                isGlobalSituation = false;
+            PageReference pageRef = new PageReference(
+                '/setup/org/orgstorageusage.jsp?id='
+                + UserInfo.getOrganizationId()
+                + '&setupid=CompanyResourceDisk&appLayout=setup&tour=&isdtp=p1');
+            String snapshotContent;
+            if (Test.isRunningTest()) {
+                snapshotContent = TEST_PAGE_CONTENT;
+                System.debug('execute: default test snapshot Content used ' + snapshotContent?.length());
             }
-            System.debug('execute: title initialized ' + sectionTitle);
+            else {
+                snapshotContent = (PageRef.getContent()).toString();
+                System.debug('execute: snapshot Content fetched with length ' + snapshotContent.length());
+            }
 
-            Matcher rowMatcher = PATTERN_ROW.matcher(sectionString);
-            while (rowMatcher.find()) {
-                String matchString = (rowMatcher.group()); //.replace('&nbsp;',' ');
-                Matcher lineMatcher = PATTERN_DATA.matcher(matchString);
-                if (lineMatcher.find()) {
-                    //System.debug('execute: th --> ' + lineMatcher.group(1));
-                    System.debug('execute: line match 1 ' + lineMatcher.group(1));
-                    System.debug('execute: line match 2 ' + lineMatcher.group(2));
-                    System.debug('execute: line match 3 ' + lineMatcher.group(3));
-                    System.debug('execute: line match 4 ' + lineMatcher.group(4));
-                    System.debug('execute: line match 5 ' + lineMatcher.group(5));
+            List<SYS_OrgStorageSnapshot__c> newSnapshots = new List<SYS_OrgStorageSnapshot__c>();
+            Matcher sectionMatcher = PATTERN_SECTION.matcher(snapshotContent);
+            while (sectionMatcher.find()) {
+                String sectionString = (sectionMatcher.group(1)); 
+                //System.debug('execute: section matched ' + sectionString);
+                System.debug('execute: processing section');
 
-                    if (isGlobalSituation) {
-                        System.debug('execute: adding global snapshot --> ' + lineMatcher.group(1) + ' : ' + lineMatcher.group(3) + ' / ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
-                        newSnapshots.add(new SYS_OrgStorageSnapshot__c(
-                            RecordTypeId = RT_ID_Global,
-                            Name = lineMatcher.group(1),
-                            Category__c = sectionTitle,
-                            Limit__c =  extractLong(lineMatcher.group(3)),
-                            Used__c = extractLong(lineMatcher.group(4)),
-                            Ratio__c = extractRatio(lineMatcher.group(5))
-                        ));
-                    }
-                    else {
-                        System.debug('execute: processing detailed snapshot');
-                        if (String.isBlank(lineMatcher.group(1))) {
-                            System.debug('execute: reanalysing match string ' + matchString);
-                            Matcher labelMatcher = PATTERN_LABEL.matcher(matchString);
-                            if (labelMatcher.find()){
-                                System.debug('execute: adding detail data snapshot --> ' + labelMatcher.group(1) + ' : ' + lineMatcher.group(3) + ' / ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
-                                newSnapshots.add(new SYS_OrgStorageSnapshot__c(
-                                    RecordTypeId = RT_ID_Detail,
-                                    Name = labelMatcher.group(1),
-                                    Category__c = sectionTitle,
-                                    //Type__c = (fileDetails.contains(labelMatcher.group(1)) ? TYPE_FILE : (bigObjectDetails.contains(labelMatcher.group(1)) ? TYPE_BIG_OBJECT : TYPE_DATA)),
-                                    Count__c = extractLong(lineMatcher.group(3)),
-                                    Storage__c = extractLong(lineMatcher.group(4)),
-                                    Ratio__c = extractRatio(lineMatcher.group(5))
-                                ));
-                            }
-                            else {
-                                Matcher labelMatcher2 = PATTERN_LABEL2.matcher(matchString);
-                                if (labelMatcher2.find()){
-                                    System.debug('execute: adding detail user snapshot --> ' + labelMatcher2.group(1) + ' : ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
+                Matcher titleMatcher = PATTERN_TITLE.matcher(sectionString);
+                String sectionTitle =  'Overall Situation';
+                Boolean isGlobalSituation = true;
+                if (titleMatcher.find()) {
+                    System.debug('execute: title matched');
+                    System.debug('execute: title match value ' +  titleMatcher.group());
+                    sectionTitle = titleMatcher.group(1);
+                    isGlobalSituation = false;
+                }
+                System.debug('execute: title initialized ' + sectionTitle);
+
+                Matcher rowMatcher = PATTERN_ROW.matcher(sectionString);
+                while (rowMatcher.find()) {
+                    String matchString = (rowMatcher.group()); //.replace('&nbsp;',' ');
+                    Matcher lineMatcher = PATTERN_DATA.matcher(matchString);
+                    if (lineMatcher.find()) {
+                        //System.debug('execute: th --> ' + lineMatcher.group(1));
+                        System.debug('execute: line match 1 ' + lineMatcher.group(1));
+                        System.debug('execute: line match 2 ' + lineMatcher.group(2));
+                        System.debug('execute: line match 3 ' + lineMatcher.group(3));
+                        System.debug('execute: line match 4 ' + lineMatcher.group(4));
+                        System.debug('execute: line match 5 ' + lineMatcher.group(5));
+
+                        if (isGlobalSituation) {
+                            System.debug('execute: adding global snapshot --> ' + lineMatcher.group(1) + ' : ' + lineMatcher.group(3) + ' / ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
+                            newSnapshots.add(new SYS_OrgStorageSnapshot__c(
+                                RecordTypeId = RT_ID_Global,
+                                Name = lineMatcher.group(1),
+                                Category__c = sectionTitle,
+                                Limit__c =  extractLong(lineMatcher.group(3)),
+                                Used__c = extractLong(lineMatcher.group(4)),
+                                Ratio__c = extractRatio(lineMatcher.group(5))
+                            ));
+                        }
+                        else {
+                            System.debug('execute: processing detailed snapshot');
+                            if (String.isBlank(lineMatcher.group(1))) {
+                                System.debug('execute: reanalysing match string ' + matchString);
+                                Matcher labelMatcher = PATTERN_LABEL.matcher(matchString);
+                                if (labelMatcher.find()){
+                                    System.debug('execute: adding detail data snapshot --> ' + labelMatcher.group(1) + ' : ' + lineMatcher.group(3) + ' / ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
                                     newSnapshots.add(new SYS_OrgStorageSnapshot__c(
                                         RecordTypeId = RT_ID_Detail,
-                                        Name = labelMatcher2.group(1),
+                                        Name = labelMatcher.group(1),
                                         Category__c = sectionTitle,
                                         //Type__c = (fileDetails.contains(labelMatcher.group(1)) ? TYPE_FILE : (bigObjectDetails.contains(labelMatcher.group(1)) ? TYPE_BIG_OBJECT : TYPE_DATA)),
-                                        //Count__c = extractLong(lineMatcher.group(2)),
+                                        Count__c = extractLong(lineMatcher.group(3)),
                                         Storage__c = extractLong(lineMatcher.group(4)),
                                         Ratio__c = extractRatio(lineMatcher.group(5))
                                     ));
                                 }
                                 else {
-                                    System.debug('execute: ignoring line (no label found) ' + matchString);
-                                }                  
+                                    Matcher labelMatcher2 = PATTERN_LABEL2.matcher(matchString);
+                                    if (labelMatcher2.find()){
+                                        System.debug('execute: adding detail user snapshot --> ' + labelMatcher2.group(1) + ' : ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
+                                        newSnapshots.add(new SYS_OrgStorageSnapshot__c(
+                                            RecordTypeId = RT_ID_Detail,
+                                            Name = labelMatcher2.group(1),
+                                            Category__c = sectionTitle,
+                                            //Type__c = (fileDetails.contains(labelMatcher.group(1)) ? TYPE_FILE : (bigObjectDetails.contains(labelMatcher.group(1)) ? TYPE_BIG_OBJECT : TYPE_DATA)),
+                                            //Count__c = extractLong(lineMatcher.group(2)),
+                                            Storage__c = extractLong(lineMatcher.group(4)),
+                                            Ratio__c = extractRatio(lineMatcher.group(5))
+                                        ));
+                                    }
+                                    else {
+                                        System.debug('execute: ignoring line (no label found) ' + matchString);
+                                    }                  
+                                }
+                            }
+                            else {
+                                System.debug('execute: adding detail tech user snapshot --> ' + lineMatcher.group(1) + ' : ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
+                                newSnapshots.add(new SYS_OrgStorageSnapshot__c(
+                                    RecordTypeId = RT_ID_Detail,
+                                    Name = lineMatcher.group(1),
+                                    Category__c = sectionTitle,
+                                    //Type__c = (fileDetails.contains(labelMatcher.group(1)) ? TYPE_FILE : (bigObjectDetails.contains(labelMatcher.group(1)) ? TYPE_BIG_OBJECT : TYPE_DATA)),
+                                    //Count__c = extractLong(lineMatcher.group(2)),
+                                    Storage__c = extractLong(lineMatcher.group(4)),
+                                    Ratio__c = extractRatio(lineMatcher.group(5))
+                                ));
                             }
                         }
-                        else {
-                            System.debug('execute: adding detail tech user snapshot --> ' + lineMatcher.group(1) + ' : ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
-                            newSnapshots.add(new SYS_OrgStorageSnapshot__c(
-                                RecordTypeId = RT_ID_Detail,
-                                Name = lineMatcher.group(1),
-                                Category__c = sectionTitle,
-                                //Type__c = (fileDetails.contains(labelMatcher.group(1)) ? TYPE_FILE : (bigObjectDetails.contains(labelMatcher.group(1)) ? TYPE_BIG_OBJECT : TYPE_DATA)),
-                                //Count__c = extractLong(lineMatcher.group(2)),
-                                Storage__c = extractLong(lineMatcher.group(4)),
-                                Ratio__c = extractRatio(lineMatcher.group(5))
-                            ));
-                        }
+                    }
+                    else {
+                        System.debug('execute: ignoring line (no match) ' + matchString);   
                     }
                 }
-                else {
-                    System.debug('execute: ignoring line (no match) ' + matchString);   
-                }
             }
-        }
 
-        if (newSnapshots.size() > 0) {
-            System.debug('execute: inserting #snapshots ' + newSnapshots.size());
-            insert newSnapshots;
-        }
-        else {
-            System.debug('execute: no snapshots to insert');
-        }
-
-        if ((SETTING.PurgeAfterDays__c != null) &&  (SETTING.PurgeAfterDays__c > 0)) {
-            System.debug('execute: purging old snapshot records');
-
-            Date purgeLimit = System.today().addDays(- ((Integer)(SETTING.PurgeAfterDays__c)));
-            System.debug('execute: purgeLimit set to ' + purgeLimit);
-            List<SYS_OrgStorageSnapshot__c> snapshots2delete =
-                [select Id from SYS_OrgStorageSnapshot__c where CreatedDate < :purgeLimit];
-            if (snapshots2delete?.size() > 0) {
-                System.debug('execute: deleting #snapshots ' + snapshots2delete.size());
-                delete snapshots2delete;
+            if (newSnapshots.size() > 0) {
+                System.debug('execute: inserting #snapshots ' + newSnapshots.size());
+                insert newSnapshots;
             }
             else {
-                System.debug('execute: no snapshots to purge');
+                System.debug('execute: no snapshots to insert');
             }
-        }
-        else {
-            System.debug('execute: no purge configured');
+
+            if ((SETTING.PurgeAfterDays__c != null) &&  (SETTING.PurgeAfterDays__c > 0)) {
+                System.debug('execute: purging old snapshot records');
+
+                Date purgeLimit = System.today().addDays(- ((Integer)(SETTING.PurgeAfterDays__c)));
+                System.debug('execute: purgeLimit set to ' + purgeLimit);
+                List<SYS_OrgStorageSnapshot__c> snapshots2delete =
+                    [select Id from SYS_OrgStorageSnapshot__c where CreatedDate < :purgeLimit];
+                if (snapshots2delete?.size() > 0) {
+                    System.debug('execute: deleting #snapshots ' + snapshots2delete.size());
+                    delete snapshots2delete;
+                }
+                else {
+                    System.debug('execute: no snapshots to purge');
+                }
+            }
+            else {
+                System.debug('execute: no purge configured');
+            }
+
+            System.debug('execute: END SYS_OrgStorageSnapshot_QUE');
         }
 
-        System.debug('execute: END SYS_OrgStorageSnapshot_SCH');
-    }
-
-    private static Long extractLong(final String valueStr) {
-        //System.debug('extractLong: START with ' + valueStr);
-        Double value;
-        if (valueStr.contains('&nbsp;')) {
-            List<String> valueParts = valueStr.split('&nbsp;');
-            //System.debug('extractLong: valueParts extracted ' + valueParts);
-            value = Double.valueOf(valueParts[0].replace(',','.').replace(' ',''));
-            if (valueParts[1] == 'KB') {
-                //System.debug('extractLong: managing KB');
-                value = value * 1024;
+        private Long extractLong(final String valueStr) {
+            //System.debug('extractLong: START with ' + valueStr);
+            Double value;
+            if (valueStr.contains('&nbsp;')) {
+                List<String> valueParts = valueStr.split('&nbsp;');
+                //System.debug('extractLong: valueParts extracted ' + valueParts);
+                value = Double.valueOf(valueParts[0].replace(',','.').replace(' ',''));
+                if (valueParts[1] == 'KB') {
+                    //System.debug('extractLong: managing KB');
+                    value = value * 1024;
+                }
+                else if (valueParts[1] == 'MB') {
+                    //System.debug('extractLong: managing MB');
+                    value = value * 1024 * 1024;
+                }
+                else if (valueParts[1] == 'GB') {
+                    //System.debug('extractLong: managing GB');
+                    value = value * 1024 * 1024 * 1024;
+                }
+                else if (valueParts[1] == 'TB') {
+                    //System.debug('extractLong: managing TB');
+                    value = value * 1024 * 1024 * 1024 * 1024;
+                }
             }
-            else if (valueParts[1] == 'MB') {
-                //System.debug('extractLong: managing MB');
-                value = value * 1024 * 1024;
+            else {
+                //System.debug('extractLong: baseline conversion ' + valueStr.replace(',','.').replace(' ','').trim());
+                value = Double.valueOf(valueStr.replace(',','.').replace(' ','').trim());
             }
-            else if (valueParts[1] == 'GB') {
-                //System.debug('extractLong: managing GB');
-                value = value * 1024 * 1024 * 1024;
-            }
-            else if (valueParts[1] == 'TB') {
-                //System.debug('extractLong: managing TB');
-                value = value * 1024 * 1024 * 1024 * 1024;
-            }
+            //System.debug('extractLong: END with ' + value.round());
+            return value.round();
         }
-        else {
-            //System.debug('extractLong: baseline conversion ' + valueStr.replace(',','.').replace(' ','').trim());
-            value = Double.valueOf(valueStr.replace(',','.').replace(' ','').trim());
-        }
-        //System.debug('extractLong: END with ' + value.round());
-        return value.round();
-    }
 
-    private static Decimal extractRatio(final String valueStr) {
-        //System.debug('extractRatio: START with ' + valueStr);
-        Decimal value = Decimal.valueof(valueStr.removeEnd(' %').replace(' ','').replace(',','.').trim());
-        //System.debug('extractRatio: END with ' + value.round());
-        return value;
-    }
+        private Decimal extractRatio(final String valueStr) {
+            //System.debug('extractRatio: START with ' + valueStr);
+            Decimal value = Decimal.valueof(valueStr.removeEnd(' %').replace(' ','').replace(',','.').trim());
+            //System.debug('extractRatio: END with ' + value.round());
+            return value;
+        }
+    } 
 }
