@@ -99,7 +99,7 @@ of the limit evolution (for now, there is a single schedule for all limits).
 
 ⚠️ **Beware** that the **SYS_PicklistSnapshot_SCH** schedulable will systematically fail
 if bad Picklist names are registered in the `MasterLabel`of any **SYS_PicklistLabel__mdt** metadata
-record in `active` status. It may be usefull to check the configuration validity after any
+record in `active` status. It may thus be useful to check the configuration validity after any
 modification by launching the following command from the developer console:
 ```
 SYS_PicklistSnapshot_SCH.execute(null);
