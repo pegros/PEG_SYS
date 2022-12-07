@@ -1,5 +1,5 @@
 
-# ![Logo](/media/Logo.png) PEG SYS Components
+# ![Logo](/media/logo.png) &nbsp; PEG SYS Components
 
 ## Introduction
 
