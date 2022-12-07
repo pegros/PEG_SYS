@@ -13,7 +13,7 @@ connections). Via a set of schedulable Apex tools, it enables to take periodic s
 It stores snapshot data in custom object records (`CreationDate` corresponding to the snapshot timestamp) and
 automatically purges old ones based on a configurable duration.
 
-It also addresses issues specific to **CRM Analytics**, such as:
+It also addresses issues specific to **CRM Analytics** (or even **Marketing Cloud**), such as:
 * **Picklist Values** extraction for code-to-label picklist value mapping in DataFlows/Recipes (only the current
   situation of the configured picklist fields being stored, i.e. no history)
 
@@ -84,8 +84,26 @@ to bypass some uninteresting limits (as a comma separated list of limit names).
 * **Custom Metadata** records are available for the Picklist snapshot to define the set of
 picklist fields to consider (the label of which should be in the `ObjectApiName.FieldApiName` format)
 
-Snapshots may then be scheduled via the standard `Schedule Apex` button displayed in the
-**Apex Classes** Setup page.
+
+## Scheduling
+
+Snapshots may be **scheduled** independently via the standard `Schedule Apex` button displayed
+in the **Apex Classes** Setup page.
+* The **SYS_OrgStorageSnapshot_SCH_TST** is usually scheduled once a week to really 
+track visible evolution
+* The **SYS_PicklistSnapshot_SCH** is usually scheduled once a day to track any evolution to 
+the corresponding metadata (but it may be also be launched only manually after each new application
+deployment)
+* The **SYS_OrgLimitSnapshot_SCH_TST** may be scheduled multiple times per day to get finer view 
+of the limit evolution (for now, there is a single schedule for all limits).
+
+⚠️ **Beware** that the **SYS_PicklistSnapshot_SCH** schedulable will systematically fail
+if bad Picklist names are registered in the `MasterLabel`of any **SYS_PicklistLabel__mdt** metadata
+record in `active` status. It may be usefull to check the configuration validity after any
+modification by launching the following command from the developer console:
+```
+SYS_PicklistSnapshot_SCH.execute(null);
+```
 
 
 ## CRM Analytics Aggregation

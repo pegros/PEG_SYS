@@ -47,7 +47,7 @@ public without sharing class SYS_PicklistSnapshot_SCH  implements Schedulable {
     *               are correct and, if OK, launches a SYS_PicklistSnapshot_QUE queueable
     *               asynchronous process to update the snapshot.
     * @param        context     Schedulable context (if any).
-    * @Exception    none special.
+    * @Exception    DmlExceptions raised from the checkPicklists() execution.
     ***/
     public static void execute(SchedulableContext context) {
         System.debug('execute: START SYS_PicklistSnapshot_SCH');
@@ -81,6 +81,8 @@ public without sharing class SYS_PicklistSnapshot_SCH  implements Schedulable {
     *               records. Exceptions are thrown if the MasterLabel is improperly formated
     *               (should be "ObjectApiName.FieldApiName"), if the Object is not found,
     *               if the field is not found and if the field is not of picklist type.
+    * @param        picklistList     List of Picklist metadata configurations to check.
+    * @Exception    DmlExceptions raised from the checkPicklists() execution.
     ***/
 
     @TestVisible
