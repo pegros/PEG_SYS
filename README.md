@@ -1,11 +1,10 @@
----
-# PEG SYS Components
----
+
+# ![Logo](/media/logo.png) PEG SYS Components
 
 ## Introduction
 
 The **PEG_SYS** package aims primarily at generating various Org monitoring data to be used either locally
-(via standard reports and dashboards) or aggregation within CRM Analytics (e.g. in case of multi-Org
+(via standard reports and dashboards) or aggregation within **CRM Analytics** (e.g. in case of multi-Org
 connections). Via a set of schedulable Apex tools, it enables to take periodic snapshots of
 * **Org limits** via the standard **[OrgLimit](https://developer.salesforce.com/docs/atlas.en-us.238.0.apexref.meta/apexref/apex_class_System_OrgLimit.htm)** Apex class
 * **Org Storage** via the standard **Storage Usage** Setup page (accessible from the **System Overview** setup page)
