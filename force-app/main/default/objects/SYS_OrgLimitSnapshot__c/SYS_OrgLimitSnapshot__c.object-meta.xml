@@ -154,7 +154,6 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
-    <gender>Masculine</gender>
     <label>SYS OrgLimitSnapshot</label>
     <nameField>
         <label>Limit Name</label>
