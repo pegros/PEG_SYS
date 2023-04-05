@@ -117,3 +117,9 @@ Snapshot data may be easily aggregated in a **CRM Analytics** instance from mult
 
 Such a DataFlow (may also be done in a Recipe) may be extended to manage longer term historisation in
 **CRM Analytics** (e.g. by keeping only 10 day sliding window in the Salesforce Orgs).
+
+## Installation
+<a href="https://githubsfdeploy.herokuapp.com?ref=master">
+  <img alt="Deploy to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
+</a>
