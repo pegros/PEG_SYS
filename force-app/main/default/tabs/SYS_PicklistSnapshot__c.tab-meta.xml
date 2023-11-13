@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customObject>true</customObject>
+    <description>Tab for the PicklistSnapshot Object of the PEG_SYS package.</description>
+    <motif>Custom45: Ticket</motif>
+</CustomTab>

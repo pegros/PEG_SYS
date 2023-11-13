@@ -23,6 +23,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>SYS_OrgLimitSnapshot__c.Ratio__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>SYS_OrgLimitSnapshot__c.Value__c</field>
         <readable>true</readable>
@@ -45,6 +50,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>SYS_OrgStorageSnapshot__c.Ratio__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>SYS_OrgStorageSnapshot__c.RecordTypeName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
