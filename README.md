@@ -94,6 +94,7 @@ The CRM Analytics package contains the following components:
 * 2 recipes, respectively for
     * dataset initialisation (**SYS Monitoring Init**), typically used once to inject the initial dataset data
     * periodic dataset update (**SYS Monitoring**), typically to be scheduled to append new synched data in the existing datasets
+* 1 content asset (i.e. the logo embedded in the dashboards)
 
 ## Installation
 
