@@ -126,6 +126,7 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
                 Matcher rowMatcher = PATTERN_ROW.matcher(sectionString);
                 while (rowMatcher.find()) {
                     String matchString = (rowMatcher.group()); //.replace('&nbsp;',' ');
+                    System.debug('execute: processing match string --> ' + matchString);
                     Matcher lineMatcher = PATTERN_DATA.matcher(matchString);
                     if (lineMatcher.find()) {
                         //System.debug('execute: th --> ' + lineMatcher.group(1));
@@ -147,9 +148,9 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
                             ));
                         }
                         else {
-                            System.debug('execute: processing detailed snapshot');
+                            System.debug('execute: reanalysing for detail snapshot');
                             if (String.isBlank(lineMatcher.group(1))) {
-                                System.debug('execute: reanalysing match string ' + matchString);
+                                System.debug('execute: reanalysing detail data snapshot line');
                                 Matcher labelMatcher = PATTERN_LABEL.matcher(matchString);
                                 if (labelMatcher.find()){
                                     System.debug('execute: adding detail data snapshot --> ' + labelMatcher.group(1) + ' : ' + lineMatcher.group(3) + ' / ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
@@ -164,6 +165,7 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
                                     ));
                                 }
                                 else {
+                                    System.debug('execute: reanalysing detail user snapshot line');
                                     Matcher labelMatcher2 = PATTERN_LABEL2.matcher(matchString);
                                     if (labelMatcher2.find()){
                                         System.debug('execute: adding detail user snapshot --> ' + labelMatcher2.group(1) + ' : ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
@@ -233,41 +235,50 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
         }
 
         private Long extractLong(final String valueStr) {
-            //System.debug('extractLong: START with ' + valueStr);
+            System.debug(LoggingLevel.FINEST,'extractLong: START with ' + valueStr);
             Double value;
             if (valueStr.contains('&nbsp;')) {
                 List<String> valueParts = valueStr.split('&nbsp;');
-                //System.debug('extractLong: valueParts extracted ' + valueParts);
-                value = Double.valueOf(valueParts[0].replace(',','.').replace(' ',''));
+                System.debug(LoggingLevel.FINEST,'extractLong: valueParts extracted ' + valueParts);
+                value = Double.valueOf(valueParts[0].replace(',','.').replace(' ','').replace(' ',''));
                 if (valueParts[1] == 'KB') {
-                    //System.debug('extractLong: managing KB');
+                    System.debug(LoggingLevel.FINEST,'extractLong: managing KB');
                     value = value * 1024;
                 }
                 else if (valueParts[1] == 'MB') {
-                    //System.debug('extractLong: managing MB');
+                    System.debug(LoggingLevel.FINEST,'extractLong: managing MB');
                     value = value * 1024 * 1024;
                 }
                 else if (valueParts[1] == 'GB') {
-                    //System.debug('extractLong: managing GB');
+                    System.debug(LoggingLevel.FINEST,'extractLong: managing GB');
                     value = value * 1024 * 1024 * 1024;
                 }
                 else if (valueParts[1] == 'TB') {
-                    //System.debug('extractLong: managing TB');
+                    System.debug(LoggingLevel.FINEST,'extractLong: managing TB');
                     value = value * 1024 * 1024 * 1024 * 1024;
                 }
             }
             else {
-                //System.debug('extractLong: baseline conversion ' + valueStr.replace(',','.').replace(' ','').trim());
-                value = Double.valueOf(valueStr.replace(',','.').replace(' ','').trim());
+                System.debug(LoggingLevel.FINEST,'extractLong: baseline conversion ' + valueStr.replace(',','.').replace(' ','').replace(' ','').trim());
+                value = Double.valueOf(valueStr.replace(',','.').replace(' ','').replace(' ','').trim());
             }
-            //System.debug('extractLong: END with ' + value.round());
+            System.debug(LoggingLevel.FINEST,'extractLong: END with ' + value.round());
             return value.round();
         }
 
         private Decimal extractRatio(final String valueStr) {
-            //System.debug('extractRatio: START with ' + valueStr);
-            Decimal value = Decimal.valueof(valueStr.removeEnd(' %').replace(' ','').replace(',','.').trim());
-            //System.debug('extractRatio: END with ' + value.round());
+            System.debug(LoggingLevel.FINEST,'extractRatio: START with ' + valueStr);
+            /*String test = valueStr.replace('%','');
+            System.debug('extractRatio: % removed ' + test);
+            test = test.replace(' ','');
+            System.debug('extractRatio: strange space removed ' + test);
+            test = test.replace(',','.');
+            System.debug('extractRatio: comma replaced by . ' + test);
+            test = test.trim();
+            System.debug('extractRatio: trim done ' + test);*/
+
+            Decimal value = Decimal.valueof(valueStr.replace('%','').replace(' ','').replace(',','.').trim());
+            System.debug(LoggingLevel.FINEST,'extractRatio: END with ' + value.round());
             return value;
         }
     } 

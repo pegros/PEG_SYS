@@ -1,0 +1,112 @@
+{
+  "version" : "59.0",
+  "nodes" : {
+    "LOAD_DATASET0" : {
+      "action" : "load",
+      "sources" : [ ],
+      "parameters" : {
+        "fields" : [ "Id", "Name", "RecordTypeId", "Category__c", "Count__c", "Limit__c", "Ratio__c", "Storage__c", "Used__c", "RecordTypeName__c", "CreatedDate" ],
+        "dataset" : {
+          "type" : "connectedDataset",
+          "label" : "SYS_OrgStorageSnapshot__c",
+          "connectionName" : "SFDC_LOCAL",
+          "sourceObjectName" : "SYS_OrgStorageSnapshot__c"
+        },
+        "sampleDetails" : {
+          "type" : "TopN",
+          "sortBy" : [ ]
+        }
+      }
+    },
+    "LOAD_DATASET1" : {
+      "action" : "load",
+      "sources" : [ ],
+      "parameters" : {
+        "fields" : [ "Id", "Name", "CreatedDate", "Limit__c", "Value__c", "Ratio__c" ],
+        "dataset" : {
+          "type" : "connectedDataset",
+          "label" : "SYS_OrgLimitSnapshot__c",
+          "connectionName" : "SFDC_LOCAL",
+          "sourceObjectName" : "SYS_OrgLimitSnapshot__c"
+        },
+        "sampleDetails" : {
+          "type" : "TopN",
+          "sortBy" : [ ]
+        }
+      }
+    },
+    "OUTPUT0" : {
+      "action" : "save",
+      "sources" : [ "LOAD_DATASET1" ],
+      "parameters" : {
+        "fields" : [ ],
+        "dataset" : {
+          "type" : "analyticsDataset",
+          "label" : "SYS Org Limits",
+          "name" : "SYS_OrgLimits",
+          "folderName" : "SYS_Monitoring"
+        },
+        "measuresToCurrencies" : [ ]
+      }
+    },
+    "OUTPUT1" : {
+      "action" : "save",
+      "sources" : [ "LOAD_DATASET0" ],
+      "parameters" : {
+        "fields" : [ ],
+        "dataset" : {
+          "type" : "analyticsDataset",
+          "label" : "SYS Org Storage",
+          "name" : "SYS_OrgStorage",
+          "folderName" : "SYS_Monitoring"
+        },
+        "measuresToCurrencies" : [ ]
+      }
+    }
+  },
+  "ui" : {
+    "nodes" : {
+      "LOAD_DATASET0" : {
+        "label" : "SYS_OrgStorageSnapshot__c",
+        "type" : "LOAD_DATASET",
+        "top" : 112,
+        "left" : 112,
+        "parameters" : {
+          "sampleSize" : 2000
+        }
+      },
+      "LOAD_DATASET1" : {
+        "label" : "SYS_OrgLimitSnapshot__c",
+        "type" : "LOAD_DATASET",
+        "top" : 252,
+        "left" : 112,
+        "parameters" : {
+          "sampleSize" : 2000
+        }
+      },
+      "OUTPUT0" : {
+        "label" : "SYS OrgLimits",
+        "description" : "",
+        "type" : "OUTPUT",
+        "top" : 252.3,
+        "left" : 390
+      },
+      "OUTPUT1" : {
+        "label" : "SYS OrgStorage",
+        "description" : "",
+        "type" : "OUTPUT",
+        "top" : 112.1,
+        "left" : 392.4
+      }
+    },
+    "connectors" : [ {
+      "source" : "LOAD_DATASET1",
+      "target" : "OUTPUT0"
+    }, {
+      "source" : "LOAD_DATASET0",
+      "target" : "OUTPUT1"
+    } ],
+    "hiddenColumns" : [ ]
+  },
+  "runMode" : "full"
+}

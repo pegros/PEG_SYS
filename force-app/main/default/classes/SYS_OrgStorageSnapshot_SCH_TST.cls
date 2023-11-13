@@ -59,7 +59,7 @@ public class SYS_OrgStorageSnapshot_SCH_TST {
         //System.debug('testSetup: testResource Body ' + testResource.Body.toString());
         //Blob testContent = base64Decode(testResource.Body);
         SYS_OrgStorageSnapshot_SCH.TEST_PAGE_CONTENT = testResource.Body.toString();
-        System.debug('testExecute: testContent init ' + SYS_OrgStorageSnapshot_SCH.TEST_PAGE_CONTENT);
+        //System.debug('testExecute: testContent init ' + SYS_OrgStorageSnapshot_SCH.TEST_PAGE_CONTENT);
 
         SYS_OrgStorageSnapshot_SCH.execute(null);
 

@@ -33,12 +33,18 @@ It also addresses issues specific to **CRM Analytics** (or even **Marketing Clou
 
 ## Package Content
 
-The package contains the following main components:
+The package is split into two folders respectively containing
+* the main Apex package (`default` folder)
+* a sample CRM Analytics monitoring App (`wave` folder)
+
+### Main Package (`default` folder)
+
+The main package contains the following main components:
 * 3 Schedulable Apex classes
     * **SYS_OrgLimitSnapshot_SCH** to schedule and execute Org limit snapshots
     * **SYS_OrgStorageSnapshot_SCH** to schedule and execute Org Storage snapshots
     * **SYS_PicklistSnapshot_SCH** to schedule and execute Picklist Values snapshots
-* 3 Custom Objects
+* 3 Custom Objects (+ 3 associated tabs)
     * **SYS_OrgLimitSnapshot__c** to store Org limit snapshot data
     * **SYS_OrgStorageSnapshot__c** to store Org Storage snapshot data
     * **SYS_PicklistSnapshot__c** to store Picklist Value snapshot data
@@ -60,7 +66,19 @@ It also includes test elements for deployment:
     * **SYS_OrgStorageSnapshot_TST** to be used as **Storage Usage** Setup page test content
 
 
+### CRM Analytics Package (`wave` folder)
+
+The CRM Analytics package contains the following components:
+* a CRM Analytics App (**SYS Monitoring**)
+* 2 dashboards (**SYS Org Limits Monitoring** and **SYS Org Storage Monitoring**)
+* 2 datasets (**SYS OrgLimits** and **SYS OrgStorage**)
+* 2 recipes, respectively for
+    * dataset initialisation (**SYS Monitoring Init**), typically used once to inject the initial dataset data
+    * periodic dataset update (**SYS Monitoring**), typically to be scheduled to append new synched data in the existing datasets
+
 ## Installation
+
+### Git Deployment
 
 To retrieve the SFDX project, you may simply execute a git clone from the GitHub repository.
 ```
@@ -71,6 +89,19 @@ Via SFDX you may then deploy it on you Org
 ```
 sfdx force:source:deploy -u <yourOrgAlias> -w 10 --verbose -p force-app
 ```
+
+ℹ️ You may also deploy only the main package (i.e. without the CRM Analytics) by targeting only the `default` folder 
+```
+sfdx force:source:deploy -u <yourOrgAlias> -w 10 --verbose -p force-app/main/default
+```
+
+### Simple Heroku Deploy
+
+Alternatively, you may simply used the 
+<a href="https://githubsfdeploy.herokuapp.com?ref=master">
+  <img alt="Deploy to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
+</a>
 
 
 ## Configuration
@@ -85,6 +116,8 @@ picklist fields to consider (the label of which should be in the `ObjectApiName.
 
 
 ## Scheduling
+
+### Main Package Apex Scheduling
 
 Snapshots may be **scheduled** independently via the standard `Schedule Apex` button displayed
 in the **Apex Classes** Setup page.
@@ -104,16 +137,57 @@ modification by launching the following command from the developer console:
 SYS_PicklistSnapshot_SCH.execute(null);
 ```
 
+ℹ️ Via setup, it is only possible to schedule the snapshots on a daily basis at a given hour. If you want to schedule 
+the **SYS_OrgLimitSnapshot_SCH** easily on an hourly basis, please run the following statement from _anonymous execution
+window_ of the _dev console_.
+```
+String schedule = '0 0 * * * ?'; 
+SYS_OrgLimitSnapshot_SCH job = new SYS_OrgLimitSnapshot_SCH(); 
+system.schedule('Hourly Org Limits Snaphot', schedule, job);
+```
 
-## CRM Analytics Aggregation
+### CRM Analytics Recipe Scheduling
 
-Snapshot data may be easily aggregated in a **CRM Analytics** instance from multiple Salesforce Org by
-* fetching the custom object records via `sfdcDigest` or `digest` nodes
-* compute additional Org name and record Unique ID fields via `compute` nodes
-* aggregate the records in a single dataset via an `append` node
-* register it via a final `register` node
+Afte, having deployed the CRM Analytics package (and run the main package Apex at least once to
+have actual data to ingest), you need to initialise first the **SYS Org Storage** and **SYS Org Limits** 
+datasets by running the **SYS Monitoring Init** recipe.
+
+![Dataset Initialisation](/media/DatasetInit.png)
+
+Then, you may schedule the **SYS Monitoring** recipe to run automatically after the connection synch 
+to automatically upsert the **SYS Org Storage** and **SYS Org Limits**. This recipe enables to
+new source synched data to the history datasets.
+
+![Dataset Upsert](/media/DatasetUpdate.png)
+
+
+ℹ️ If you keep a long history in the **SYS_OrgLimitSnapshot__c** and **SYS_OrgStorageSnapshot__c** 
+source objects, you may optimise the periodic dataset updates by filtering synced data to the most 
+recent days.
+
+⚠️ It is up to you to manage the history data actually kept in the target **SYS Org Storage** and
+**SYS Org Limits** datasets. You may easily do it by adding a filtering node in the 
+**SYS Monitoring** recipe before merging the current dataset with the new data rows.
+
+By properly configuring the retention periods, you may e.g.
+* keep only a 10 day sliding window of **Org Limit** data in the Salesforce core database
+* keep 1 year of **Org Limit** data in CRM Analytics
+
+
+## Multi-Org CRM Analytics Implementation
+
+This package may be used in a multi-Org environment,
+* the main package must be deployed and scheduled on each Org
+* data produced in each Org may then be synched to a single **CRM Analytics** instance via standard  **connectors** or **external connectors**
+
+The provided datasets and recipes may however be slightly adapted.
+
+In the following example (leveraging legacy `dataflow` instead of `recipe`)
+* the custom object records are ingested via `sfdcDigest` (local Org) or `digest` (remote Org) nodes
+* `Org name` field is added and `record ID` field updated (to include Org Name) via `compute` nodes
+* all records are then merged in a single dataset via an `append` node
+* the resulting dataset is then stored via a final `register` node with the 2 additional fields.
 
 ![Data Aggregation DataFlow](/media/DataAggregation.png)
 
-Such a DataFlow (may also be done in a Recipe) may be extended to manage longer term historisation in
-**CRM Analytics** (e.g. by keeping only 10 day sliding window in the Salesforce Orgs).
+ℹ️ The provided dashboards may then simply be adapted to display and filter according to the additional `Org Name` property.
