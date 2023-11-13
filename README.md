@@ -91,7 +91,7 @@ The CRM Analytics package contains the following components:
 * a CRM Analytics App (**SYS Monitoring**)
 * 2 dashboards (**SYS Org Limits Monitoring** and **SYS Org Storage Monitoring**)
 * 2 datasets (**SYS OrgLimits** and **SYS OrgStorage**)
-* 2 recipes, respectively for
+* 2 recipes (+ 2 related dataflows required for metadata deployment), respectively for
     * dataset initialisation (**SYS Monitoring Init**), typically used once to inject the initial dataset data
     * periodic dataset update (**SYS Monitoring**), typically to be scheduled to append new synched data in the existing datasets
 * 1 content asset (i.e. the logo embedded in the dashboards)
