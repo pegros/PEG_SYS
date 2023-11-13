@@ -16,19 +16,38 @@ It also addresses issues specific to **CRM Analytics** (or even **Marketing Clou
 * **Picklist Values** extraction for code-to-label picklist value mapping in DataFlows/Recipes (only the current
   situation of the configured picklist fields being stored, i.e. no history)
 
+A **CRM Analytics** application is also provided to monitor the snapshots.
+
 ## List View Examples
+
+By default, snapshot data may be easily managed directly on Salesforce core 
+vi simple list views and standard reports.
 
 ###  **Org limits**
 
-![Org Limit Example](/media/OrgLimit.png)
+![Org Limit List View](/media/OrgLimit.png)
 
 ### **Org Storage**
 
-![Org Limit Example](/media/OrgStorage.png)
+![Org Limit List View](/media/OrgStorage.png)
 
 ### **Picklist Values**
 
-![Picklist Example](/media/Picklist.png)
+![Picklist List View](/media/Picklist.png)
+
+
+## CRM Analytics Dashboard Examples
+
+When **CRM Analytics** is available, some dashboards are available.
+
+###  **Org limits**
+
+![Org Limit Analytics Dashboard](/media/OrgLimitsMonitoring.png)
+
+### **Org Storage**
+
+![Org Limit Analytics Dashboard](/media/OrgStorageMonitoring.png)
+
 
 
 ## Package Content
@@ -97,7 +116,9 @@ sfdx force:source:deploy -u <yourOrgAlias> -w 10 --verbose -p force-app/main/def
 
 ### Simple Heroku Deploy
 
-Alternatively, you may simply used the 
+Alternatively, you may simply use the following button to deploy the whole repository
+directly to your Org.
+
 <a href="https://githubsfdeploy.herokuapp.com?ref=master">
   <img alt="Deploy to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
