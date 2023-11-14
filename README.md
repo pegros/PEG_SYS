@@ -115,21 +115,21 @@ sfdx force:source:deploy -u <yourOrgAlias> -w 10 --verbose -p force-app
 sfdx force:source:deploy -u <yourOrgAlias> -w 10 --verbose -p force-app/main/default
 ```
 
-### Simple Heroku Deploy
+### Quick Direct Deploy
 
-For a quick an easy deployment, you may alternativelmy use the following deploy buttons
+For a quick and easy deployment, you may alternatively use the following deploy buttons
 leveraging the **[GitHub Salesforce Deploy Tool](https://github.com/afawcett/githubsfdeploy)**
 implemented by [Andrew Fawcett](https://andyinthecloud.com/2013/09/24/deploy-direct-from-github-to-salesforce/).
 
-To deploy only the main Apex package to your Org, you may use the following button.
+To deploy only the **main Apex package** to your Org, you may use the following button.
 
 <a href="https://githubsfdeploy.herokuapp.com?ref=apexOnly">
   <img alt="Deploy main Apex Package to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
-To deploy the whole package (i.e. with the CRM Analytics App) to your Org,
-you may use the following button.
+To deploy the **whole package** (i.e. with the CRM Analytics App) to your Org,
+you may use the following button.<br/>
 ⚠️ **Beware** to have properly activated _CRM Analytics_ on your target Org and granted your
 user the _CRM Analytics Admin_ rights before deploying the package.
 
