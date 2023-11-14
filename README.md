@@ -153,7 +153,7 @@ picklist fields to consider (the label of which should be in the `ObjectApiName.
 
 ### CRM Analytics Application
 
-ℹ️ The **SYS Monitoring** CRM Analytics App is shared with all users in admin mode by default
+⚠️ The **SYS Monitoring** CRM Analytics App is shared with all users in admin mode by default
 upon deploy. It is therefore important to immediately modify these settings after
 deployment to prevent any data leak or dashboard corruption by unauthorized CRM Analytics users.
 
@@ -198,15 +198,15 @@ system.schedule('Hourly Org Limits Snaphots', schedule, job);
 
 ### CRM Analytics Recipe Scheduling
 
-Afte, having deployed the CRM Analytics package (and run the main package Apex at least once to
-have actual data to ingest), you need to initialise first the **SYS Org Storage** and **SYS Org Limits** 
+After having deployed and configured the CRM Analytics application (and run the main Apex schedulable classes
+at least once to have actual data to ingest), you need to initialise the **SYS Org Storage** and **SYS Org Limits** 
 datasets by running the **SYS Monitoring Init** recipe.
 
 ![Dataset Initialisation](/media/DatasetInit.png)
 
-Then, you may schedule the **SYS Monitoring** recipe to run automatically after the connection synch 
-to automatically upsert the **SYS Org Storage** and **SYS Org Limits**. This recipe enables to
-new source synched data to the history datasets.
+Then, you may then schedule the **SYS Monitoring** recipe to run automatically after connection synch 
+to periodically upsert these **SYS Org Storage** and **SYS Org Limits** datasets. This recipe enables to
+add new synched data into these history datasets.
 
 ![Dataset Upsert](/media/DatasetUpdate.png)
 
@@ -215,8 +215,8 @@ new source synched data to the history datasets.
 source objects, you may optimise the periodic dataset updates by filtering synced data to the most 
 recent days.
 
-⚠️ It is up to you to manage the history data actually kept in the target **SYS Org Storage** and
-**SYS Org Limits** datasets. You may easily do it by adding a filtering node in the 
+⚠️ It is up to you to manage the amount of history data actually kept in the target **SYS Org Storage**
+and **SYS Org Limits** datasets. You may easily do it by adding a filtering node in the 
 **SYS Monitoring** recipe before merging the current dataset with the new data rows.
 
 By properly configuring the retention periods, you may e.g.
@@ -227,11 +227,10 @@ By properly configuring the retention periods, you may e.g.
 ## Multi-Org CRM Analytics Implementation
 
 This package may be used in a multi-Org environment,
-* the main package must be deployed and scheduled on each Org
-* data produced in each Org may then be synched to a single **CRM Analytics** instance via standard  **connectors** or **external connectors**
+* the main Apex package must be deployed and scheduled on each Org
+* data produced in each Org may then be synched to a single **CRM Analytics** instance via standard **connectors** or **external connectors**
 
-The provided datasets and recipes may however be slightly adapted.
-
+The provided datasets and recipes however need to be slightly adapted.
 In the following example (leveraging legacy `dataflow` instead of `recipe`)
 * the custom object records are ingested via `sfdcDigest` (local Org) or `digest` (remote Org) nodes
 * `Org name` field is added and `record ID` field updated (to include Org Name) via `compute` nodes
@@ -240,4 +239,5 @@ In the following example (leveraging legacy `dataflow` instead of `recipe`)
 
 ![Data Aggregation DataFlow](/media/DataAggregation.png)
 
-ℹ️ The provided dashboards may then simply be adapted to display and filter according to the additional `Org Name` property.
+ℹ️ The provided dashboards also need to be slightly adapted to display and filter according to
+the additional `Org Name` property.
