@@ -117,16 +117,30 @@ sfdx force:source:deploy -u <yourOrgAlias> -w 10 --verbose -p force-app/main/def
 
 ### Simple Heroku Deploy
 
-Alternatively, you may simply use the following button to deploy the whole repository
-directly to your Org.
+For a quick an easy deployment, you may alternativelmy use the following deploy buttons
+leveraging the **[GitHub Salesforce Deploy Tool](https://github.com/afawcett/githubsfdeploy)**
+implemented by [Andrew Fawcett](https://andyinthecloud.com/2013/09/24/deploy-direct-from-github-to-salesforce/).
+
+To deploy only the main Apex package to your Org, you may use the following button.
+<a href="https://githubsfdeploy.herokuapp.com?ref=apexOnly">
+  <img alt="Deploy main Apex Package to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
+</a>
+
+To deploy the whole package (i.e. with the CRM Analytics App) to your Org,
+you may use the following button.
+⚠️ **Beware** to have properly activated _CRM Analytics_ on your target Org and granted your
+user the _CRM Analytics Admin_ rights before deploying the package.
 
 <a href="https://githubsfdeploy.herokuapp.com?ref=master">
-  <img alt="Deploy to Salesforce"
+  <img alt="Deploy complete Package to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
 
 ## Configuration
+
+### Main Apex Package
 
 Process configuration rely on custom setting or custom metadata records depending on the
 schedulable tool.
@@ -135,6 +149,19 @@ enable to set a data retention period (in days, everything being kept by default
 to bypass some uninteresting limits (as a comma separated list of limit names).
 * **Custom Metadata** records are available for the Picklist snapshot to define the set of
 picklist fields to consider (the label of which should be in the `ObjectApiName.FieldApiName` format)
+
+### CRM Analytics Application
+
+ℹ️ The **SYS Monitoring** CRM Analytics App is shared with all users in admin mode by default
+upon deploy. It is therefore important to immediately modify these settings after
+deployment to prevent any data leak or dashboard corruption by unauthorized CRM Analytics users.
+
+You also need to grant the **SYS_UseScheduleTools** permission set to the CRM Analytics
+Integration user to let it access the snapshot objects.
+
+At last, you need to configure and schedule the CRM Analytics connection to include the main
+fields of the **SYS_OrgLimitSnapshot__c** and **SYS_OrgStorageSnapshot__c** objects: `Id`, `Name`,
+`CreatedDate`, `RecordTypeId` (if any) and all custom fields.
 
 
 ## Scheduling
@@ -165,7 +192,7 @@ window_ of the _dev console_.
 ```
 String schedule = '0 0 * * * ?'; 
 SYS_OrgLimitSnapshot_SCH job = new SYS_OrgLimitSnapshot_SCH(); 
-system.schedule('Hourly Org Limits Snaphot', schedule, job);
+system.schedule('Hourly Org Limits Snaphots', schedule, job);
 ```
 
 ### CRM Analytics Recipe Scheduling
