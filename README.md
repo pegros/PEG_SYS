@@ -122,6 +122,7 @@ leveraging the **[GitHub Salesforce Deploy Tool](https://github.com/afawcett/git
 implemented by [Andrew Fawcett](https://andyinthecloud.com/2013/09/24/deploy-direct-from-github-to-salesforce/).
 
 To deploy only the main Apex package to your Org, you may use the following button.
+
 <a href="https://githubsfdeploy.herokuapp.com?ref=apexOnly">
   <img alt="Deploy main Apex Package to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
