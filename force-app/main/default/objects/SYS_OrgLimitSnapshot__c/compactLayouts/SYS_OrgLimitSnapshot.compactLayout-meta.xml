@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SYS_OrgLimitSnapshot</fullName>
+    <fields>Name</fields>
+    <fields>Ratio__c</fields>
+    <fields>CreatedById</fields>
+    <fields>Value__c</fields>
+    <fields>Limit__c</fields>
+    <label>SYS OrgLimit Snapshot</label>
+</CompactLayout>

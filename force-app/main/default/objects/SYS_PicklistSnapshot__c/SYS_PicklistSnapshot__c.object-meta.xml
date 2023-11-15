@@ -161,7 +161,16 @@
         <type>Text</type>
     </nameField>
     <pluralLabel>SYS Picklist Snapshots</pluralLabel>
-    <searchLayouts></searchLayouts>
+    <searchLayouts>
+        <searchResultsAdditionalFields>Code__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Label__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IsActive__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IsDefault__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Object__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Field__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Picklist__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>UniqueID__c</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

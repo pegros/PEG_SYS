@@ -3,6 +3,6 @@
     <content xsi:nil="true"/>
     <application>WAVE_PUBLIC_DATAFLOWS</application>
     <dataflowType>RecipeV3</dataflowType>
-    <description>Recipe SYS Monitoring_recipe</description>
-    <masterLabel>SYS Monitoring_recipe</masterLabel>
+    <description>Recipe SYS Org Storage Monitoring Init_recipe</description>
+    <masterLabel>SYS Org Storage Monitoring Init_recipe</masterLabel>
 </WaveDataflow>

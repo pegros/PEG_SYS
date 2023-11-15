@@ -2,6 +2,7 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Detail</fullName>
     <active>true</active>
+    <compactLayoutAssignment>Detail</compactLayoutAssignment>
     <description>Detail Level Snapshot</description>
     <label>Detail</label>
 </RecordType>

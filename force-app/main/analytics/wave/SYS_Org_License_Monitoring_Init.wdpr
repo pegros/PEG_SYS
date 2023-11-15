@@ -1,0 +1,61 @@
+{
+  "version" : "59.0",
+  "nodes" : {
+    "LOAD_DATASET0" : {
+      "action" : "load",
+      "sources" : [ ],
+      "parameters" : {
+        "fields" : [ "Id", "Name", "RecordTypeId", "CreatedDate", "RecordTypeName__c", "TotalLicenses__c", "UsedLicenses__c", "Ratio__c", "Status__c", "LicenseKey__c", "ExpirationDate__c" ],
+        "dataset" : {
+          "type" : "connectedDataset",
+          "label" : "SYS_OrgLicenseSnapshot__c",
+          "connectionName" : "SFDC_LOCAL",
+          "sourceObjectName" : "SYS_OrgLicenseSnapshot__c"
+        },
+        "sampleDetails" : {
+          "type" : "TopN",
+          "sortBy" : [ ]
+        }
+      }
+    },
+    "OUTPUT1" : {
+      "action" : "save",
+      "sources" : [ "LOAD_DATASET0" ],
+      "parameters" : {
+        "fields" : [ ],
+        "dataset" : {
+          "type" : "analyticsDataset",
+          "label" : "SYS Org Licenses",
+          "name" : "SYS_OrgLicenses",
+          "folderName" : "SYS_Monitoring"
+        }
+      }
+    }
+  },
+  "ui" : {
+    "nodes" : {
+      "LOAD_DATASET0" : {
+        "label" : "SYS_OrgLicenseSnapshot__c",
+        "type" : "LOAD_DATASET",
+        "top" : 112,
+        "left" : 112,
+        "parameters" : {
+          "sampleSize" : 2000
+        }
+      },
+      "OUTPUT1" : {
+        "label" : "SYS OrgLicense",
+        "description" : "",
+        "type" : "OUTPUT",
+        "top" : 112.1,
+        "left" : 392.4
+      }
+    },
+    "connectors" : [ {
+      "source" : "LOAD_DATASET0",
+      "target" : "OUTPUT1"
+    } ],
+    "hiddenColumns" : [ ]
+  },
+  "runMode" : "full"
+}

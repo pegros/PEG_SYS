@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#0070D2</headerColor>
+        <logo>SYS_Logo</logo>
+        <logoVersion>1</logoVersion>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <description>Org Monitoring App</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <label>SYS Monitoring</label>
+    <navType>Standard</navType>
+    <tabs>SYS_OrgLicenseSnapshot__c</tabs>
+    <tabs>SYS_OrgLimitSnapshot__c</tabs>
+    <tabs>SYS_OrgStorageSnapshot__c</tabs>
+    <tabs>SYS_PicklistSnapshot__c</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>SYS_Monitoring_UtilityBar</utilityBar>
+</CustomApplication>

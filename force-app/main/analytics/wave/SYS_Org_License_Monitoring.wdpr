@@ -1,0 +1,189 @@
+{
+  "version" : "59.0",
+  "nodes" : {
+    "LOAD_DATASET0" : {
+      "action" : "load",
+      "sources" : [ ],
+      "parameters" : {
+        "fields" : [ "Id", "Name", "RecordTypeId", "CreatedDate", "RecordTypeName__c", "TotalLicenses__c", "UsedLicenses__c", "Ratio__c", "Status__c", "LicenseKey__c", "ExpirationDate__c" ],
+        "dataset" : {
+          "type" : "connectedDataset",
+          "label" : "SYS_OrgLicenseSnapshot__c",
+          "connectionName" : "SFDC_LOCAL",
+          "sourceObjectName" : "SYS_OrgLicenseSnapshot__c"
+        },
+        "sampleDetails" : {
+          "type" : "TopN",
+          "sortBy" : [ ]
+        }
+      }
+    },
+    "LOAD_DATASET4" : {
+      "action" : "load",
+      "sources" : [ ],
+      "parameters" : {
+        "fields" : [ "LicenseKey__c", "ExpirationDate__c", "RecordTypeName__c", "CreatedDate", "RecordTypeId", "Id", "Status__c", "Name", "Ratio__c", "TotalLicenses__c", "UsedLicenses__c" ],
+        "dataset" : {
+          "type" : "analyticsDataset",
+          "label" : "SYS Org Licenses",
+          "name" : "SYS_OrgLicenses"
+        },
+        "sampleDetails" : {
+          "type" : "TopN",
+          "sortBy" : [ ]
+        }
+      }
+    },
+    "JOIN0" : {
+      "action" : "join",
+      "sources" : [ "LOAD_DATASET0", "LOAD_DATASET4" ],
+      "schema" : {
+        "fields" : [ ],
+        "slice" : {
+          "mode" : "DROP",
+          "ignoreMissingFields" : true,
+          "fields" : [ "SYSOrgLicense.LicenseKey__c", "SYSOrgLicense.ExpirationDate__c", "SYSOrgLicense.RecordTypeName__c", "SYSOrgLicense.CreatedDate", "SYSOrgLicense.RecordTypeId", "SYSOrgLicense.Status__c", "SYSOrgLicense.Name", "SYSOrgLicense.Ratio__c", "SYSOrgLicense.TotalLicenses__c", "SYSOrgLicense.UsedLicenses__c" ]
+        }
+      },
+      "parameters" : {
+        "joinType" : "LOOKUP",
+        "leftKeys" : [ "Id" ],
+        "rightQualifier" : "SYSOrgLicense",
+        "rightKeys" : [ "Id" ]
+      }
+    },
+    "FILTER0" : {
+      "action" : "filter",
+      "sources" : [ "JOIN0" ],
+      "parameters" : {
+        "filterExpressions" : [ {
+          "type" : "TEXT",
+          "field" : "SYSOrgLicense.Id",
+          "operator" : "IS_NULL",
+          "operands" : [ ]
+        } ]
+      }
+    },
+    "APPEND0" : {
+      "action" : "appendV2",
+      "sources" : [ "DROP_FIELDS0", "LOAD_DATASET4" ],
+      "parameters" : {
+        "fieldMappings" : [ ]
+      }
+    },
+    "DROP_FIELDS0" : {
+      "action" : "schema",
+      "sources" : [ "FILTER0" ],
+      "parameters" : {
+        "fields" : [ ],
+        "slice" : {
+          "mode" : "DROP",
+          "ignoreMissingFields" : true,
+          "fields" : [ "SYSOrgLicense.Id" ]
+        }
+      }
+    },
+    "OUTPUT1" : {
+      "action" : "save",
+      "sources" : [ "APPEND0" ],
+      "parameters" : {
+        "fields" : [ ],
+        "dataset" : {
+          "type" : "analyticsDataset",
+          "label" : "SYS Org Licenses",
+          "name" : "SYS_OrgLicenses",
+          "folderName" : "SYS_Monitoring"
+        },
+        "measuresToCurrencies" : [ ]
+      }
+    }
+  },
+  "ui" : {
+    "nodes" : {
+      "LOAD_DATASET0" : {
+        "label" : "SYS_OrgLicenseSnapshot__c",
+        "type" : "LOAD_DATASET",
+        "top" : 112,
+        "left" : 112,
+        "parameters" : {
+          "sampleSize" : 2000
+        }
+      },
+      "LOAD_DATASET4" : {
+        "label" : "SYS Org Licenses",
+        "description" : "",
+        "type" : "LOAD_DATASET",
+        "top" : 252,
+        "left" : 252.10000000000002,
+        "parameters" : {
+          "sampleSize" : 2000
+        }
+      },
+      "JOIN0" : {
+        "label" : "Identify existing rows",
+        "description" : "",
+        "type" : "JOIN",
+        "top" : 112.1,
+        "left" : 252.2
+      },
+      "FILTER0" : {
+        "label" : "Keep new rows",
+        "description" : "",
+        "type" : "FILTER",
+        "top" : 112,
+        "left" : 392
+      },
+      "APPEND0" : {
+        "label" : "Merge all rows",
+        "description" : "",
+        "type" : "APPEND",
+        "top" : 112,
+        "left" : 672
+      },
+      "TRANSFORM1" : {
+        "label" : "Drop Existing Row ID",
+        "description" : "",
+        "type" : "TRANSFORM",
+        "top" : 112,
+        "left" : 532,
+        "graph" : {
+          "DROP_FIELDS0" : {
+            "label" : "Drop Existing Record ID"
+          }
+        },
+        "connectors" : [ ]
+      },
+      "OUTPUT1" : {
+        "label" : "SYS OrgStorage",
+        "description" : "",
+        "type" : "OUTPUT",
+        "top" : 112,
+        "left" : 812
+      }
+    },
+    "connectors" : [ {
+      "source" : "LOAD_DATASET0",
+      "target" : "JOIN0"
+    }, {
+      "source" : "LOAD_DATASET4",
+      "target" : "JOIN0"
+    }, {
+      "source" : "JOIN0",
+      "target" : "FILTER0"
+    }, {
+      "source" : "TRANSFORM1",
+      "target" : "APPEND0"
+    }, {
+      "source" : "LOAD_DATASET4",
+      "target" : "APPEND0"
+    }, {
+      "source" : "FILTER0",
+      "target" : "TRANSFORM1"
+    }, {
+      "source" : "APPEND0",
+      "target" : "OUTPUT1"
+    } ],
+    "hiddenColumns" : [ ]
+  },
+  "runMode" : "full"
+}
