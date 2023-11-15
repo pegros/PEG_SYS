@@ -4,97 +4,177 @@
 ## Introduction
 
 The **PEG_SYS** package aims primarily at generating various Org monitoring data to be used either locally
-(via standard reports and dashboards) or aggregation within **CRM Analytics** (e.g. in case of multi-Org
-connections). Via a set of schedulable Apex tools, it enables to take periodic snapshots of
+(via standard reports and dashboards) or within **CRM Analytics** (e.g. for long history retention or in case
+of multi-Org connections).
+
+Via a set of schedulable Apex tools, it enables to take periodic snapshots of
 * **Org limits** via the standard **[OrgLimit](https://developer.salesforce.com/docs/atlas.en-us.238.0.apexref.meta/apexref/apex_class_System_OrgLimit.htm)** Apex class
 * **Org Storage** via the standard **Storage Usage** Setup page (accessible from the **System Overview** setup page)
+* **Org Licenses** via the standard **UserLicense** and **PermissionSetLicense** objects (via SOQL queries)
 
 It stores snapshot data in custom object records (`CreationDate` corresponding to the snapshot timestamp) and
-automatically purges old ones based on a configurable duration.
+automatically purges old ones based on configurable durations (per object).
 
 It also addresses issues specific to **CRM Analytics** (or even **Marketing Cloud**), such as:
 * **Picklist Values** extraction for code-to-label picklist value mapping in DataFlows/Recipes (only the current
   situation of the configured picklist fields being stored, i.e. no history)
 
-A **CRM Analytics** application is also provided to monitor the snapshots.
+A **CRM Analytics** application is also provided to monitor the snapshots on a larger scale, with all 
+the recipes required to initiate and update the underlying datasets.
 
-## List View Examples
 
-By default, snapshot data may be easily managed directly on Salesforce core 
-vi simple list views and standard reports.
+## Standard Salesforce Application
 
-###  **Org limits**
+A standard **SYS Monitoring** Application is provided and enables to access the standard custom objects
+storing the snapshots.
 
-![Org Limit List View](/media/OrgLimit.png)
+![SYS Monitoring App](/media/MonitoringApp.png)
+
+By default, object tabs and some list views are provided. this baseline may easily be 
+extended by configuring additional list views or standard reports / dashboards.
+
+ℹ️ The creation date of all **SYS** objects correspond to the snapshot timestamp.
+
+
+### **Org Licenses**
+
+This object contains snapshots fetched by SOQL queries on the standard **UserLicense**
+and **PermissionSetLicense** objects. Record Types segregate the two data source.
+
+![Org Licenses List View](/media/OrgLicenses.png)
+
+
+### **Org Limits**
+
+This object contains snapshots fetched via the standard **Apex OrgLimit API**.
+
+![Org Limits List View](/media/OrgLimit.png)
+
 
 ### **Org Storage**
 
-![Org Limit List View](/media/OrgStorage.png)
+This object contains snapshots fetched by parsing the standard **Storage Usage** Setup page.
+Multiple Record Types are available, segregating data corresponding to each of the table
+available in this page. Field values are set depending on each Record Type, as well as the
+meaning of the ratio. 
+
+![Org Storage List View](/media/OrgStorage.png)
+
 
 ### **Picklist Values**
+
+This object contains snapshots fetched by leveraging standard **Apex Schema.describe()** calls.
+A unique name is generated concatenating the object, the field and the value code, enabling
+to easily perform augment / join operations in **CRM Analytics** dataflows / recipes to set 
+labels corresponding to picklist fields in datasets.
 
 ![Picklist List View](/media/Picklist.png)
 
 
-## CRM Analytics Dashboard Examples
+## CRM Analytics Application
 
-When **CRM Analytics** is available, some dashboards are available.
+A standard **CRM Analytics** Application is provided and enables to access various Dashboards
+and Lenses leveraging the various snapshot objects.
 
-###  **Org limits**
+![CRM Analytics Monitoring App](/media/AnalyticsMonitoringApp.png)
+
+###  **Org Licenses**
+
+For the licenses, a simple dashboard is provided to monitor the evolution
+of license consumption for User or Permission Set licenses over a period. 
 
 ![Org Limit Analytics Dashboard](/media/OrgLimitsMonitoring.png)
 
+
+###  **Org Limits**
+
+For the governor limits, a simple dashboard is provided to monitor the evolution
+of their values over a period. Granularity is hourly to provide more details
+of consumption peaks within a day.
+
+![Org Limit Analytics Dashboard](/media/OrgLimitsMonitoring.png)
+
+
 ### **Org Storage**
+
+For the storage, a simple dashboard is provided to monitor the evolution
+of storage over a period. Different tabs enable to get details about 
+the different types of storage and top consuming Users.
 
 ![Org Limit Analytics Dashboard](/media/OrgStorageMonitoring.png)
 
+
+### **Picklist Values**
+
+For the picklist values, a simple Lens is provided to control the actual set of 
+values synched within **CRM Analytics**.
+
+![Org Picklist Analytics Lens](/media/PicklistValuesControl.png)
 
 
 ## Package Content
 
 The package is split into two folders respectively containing
 * the main Apex package (`default` folder)
-* a sample CRM Analytics monitoring App (`wave` folder)
+* a sample CRM Analytics monitoring App (`analytics` folder)
 
 ### Main Package (`default` folder)
 
 The main package contains the following main components:
-* 3 Schedulable Apex classes
+* 4 Schedulable Apex classes (+ 4 related test classes)
+    * **SYS_OrgLicenseSnapshot_SCH** to schedule and execute Org license snapshots
     * **SYS_OrgLimitSnapshot_SCH** to schedule and execute Org limit snapshots
     * **SYS_OrgStorageSnapshot_SCH** to schedule and execute Org Storage snapshots
     * **SYS_PicklistSnapshot_SCH** to schedule and execute Picklist Values snapshots
-* 3 Custom Objects (+ 3 associated tabs)
+* 4 Custom Objects (+ 4 associated tabs + 4 associated layouts)
+    * **SYS_OrgLicenseSnapshot__c** to store Org License snapshot data
     * **SYS_OrgLimitSnapshot__c** to store Org limit snapshot data
     * **SYS_OrgStorageSnapshot__c** to store Org Storage snapshot data
     * **SYS_PicklistSnapshot__c** to store Picklist Value snapshot data
-* 2 Custom Settings
+* 3 Custom Settings
+    * **SYS_OrgLicenseConfig__c** to configure Org license snapshot process
     * **SYS_OrgLimitConfig__c** to configure Org limit snapshot process
     * **SYS_OrgStorageConfig__c** to configure Org Storage snapshot process
 * 1 Custom Metadata
     * **SYS_PicklistLabel__mdt** to configure Picklist Field snapshot process
-* 1 PermissionSet
+* 1 PermissionSet (+ 1 related layout)
     * **SYS_UseScheduleTools** to get all access rights necessary to run the schedulable
     Apex classes and access the snapshot data and configuration.
 
 It also includes test elements for deployment:
-* 3 Apex test classes
-    * **SYS_OrgLimitSnapshot_SCH_TST** to test the SYS_OrgLimitSnapshot_SCH class
-    * **SYS_OrgStorageSnapshot_SCH_TST** to test the SYS_OrgStorageSnapshot_SCH class
-    * **SYS_PicklistSnapshot_SCH_TST** to test the SYS_PicklistSnapshot_SCH class
+* 1 Application
+    * **SYS_Monitoring** providing access to the different **SYS** Object tabs
+    * with its related (empty) utility bar flexipage
 * 1 Static Resources
     * **SYS_OrgStorageSnapshot_TST** to be used as **Storage Usage** Setup page test content
+* 1 Content Asset
+    * **SYS_Logo** containing the logo displayed on the App (and **CRM Analytics** Dashboards)
 
 
 ### CRM Analytics Package (`wave` folder)
 
 The CRM Analytics package contains the following components:
-* a CRM Analytics App (**SYS Monitoring**)
-* 2 dashboards (**SYS Org Limits Monitoring** and **SYS Org Storage Monitoring**)
-* 2 datasets (**SYS OrgLimits** and **SYS OrgStorage**)
-* 2 recipes (+ 2 related dataflows required for metadata deployment), respectively for
-    * dataset initialisation (**SYS Monitoring Init**), typically used once to inject the initial dataset data
-    * periodic dataset update (**SYS Monitoring**), typically to be scheduled to append new synched data in the existing datasets
-* 1 content asset (i.e. the logo embedded in the dashboards)
+* 1 CRM Analytics App
+    * **SYS Monitoring** containing all **SYS** datasets, dashboards and lens
+* 3 dashboards 
+    * **SYS Org Licenses Monitoring** for licenses
+    * **SYS Org Limits Monitoring** for limits
+    * **SYS Org Storage Monitoring** for Storage
+* 1 lens 
+    * **SYS Org Picklist Status** for picklist values
+* 4 datasets
+    * **SYS OrgLicenses** for licenses
+    * **SYS OrgLimits** for limits
+    * **SYS OrgStorage** for Storage
+    * **SYS OrgPicklist** for picklist values
+* 7 recipes (+ 7 related dataflows required for metadata deployment), with different purposes
+    * **SYS_Picklist_Label_Synch** simply overwrites the **SYS OrgPicklist** dataset
+    * **SYS_Org_License_Monitoring_Init**, **SYS_Org_Limit_Monitoring_Init** and **SYS_Org_Storage_Monitoring_Init** enable to respectively initialise the **SYS OrgLicenses**, **SYS OrgLimits** and **SYS OrgStorage** datasets after
+    initial synch (they should be run only once)
+    * **SYS_Org_License_Monitoring**, **SYS_Org_Limit_Monitoring** and **SYS_Org_Storage_Monitoring** enable to respectively extend the **SYS OrgLicenses**, **SYS OrgLimits** and **SYS OrgStorage** datasets after
+    each connection run to append new synched data (they should be scheduled according to the connection used
+    for each **SYS** custom object)
+
 
 ## Installation
 
@@ -151,6 +231,11 @@ to bypass some uninteresting limits (as a comma separated list of limit names).
 * **Custom Metadata** records are available for the Picklist snapshot to define the set of
 picklist fields to consider (the label of which should be in the `ObjectApiName.FieldApiName` format)
 
+⚠️ You also need to grant the **SYS_UseScheduleTools** permission set to all users requiring
+access to the **SYS Monitoring** App or teh **SYS** custom objects (especially the user scheduling
+the snapshot Apex classes, see below).
+
+
 ### CRM Analytics Application
 
 ⚠️ The **SYS Monitoring** CRM Analytics App is shared with all users in admin mode by default
@@ -158,11 +243,11 @@ upon deploy. It is therefore important to immediately modify these settings afte
 deployment to prevent any data leak or dashboard corruption by unauthorized CRM Analytics users.
 
 You also need to grant the **SYS_UseScheduleTools** permission set to the CRM Analytics
-Integration user to let it access the snapshot objects.
+Integration user to let it access the **SYS** custom objects.
 
-At last, you need to configure and schedule the CRM Analytics connection to include the main
-fields of the **SYS_OrgLimitSnapshot__c** and **SYS_OrgStorageSnapshot__c** objects: `Id`, `Name`,
-`CreatedDate`, `RecordTypeId` (if any) and all custom fields.
+At last, you need to configure and schedule the CRM Analytics connection(s) to include the main
+fields of the **SYS** objects: `Id`, `Name`, `CreatedDate`, `RecordTypeId` (if any)
+and all custom fields.
 
 
 ## Scheduling
@@ -171,13 +256,15 @@ fields of the **SYS_OrgLimitSnapshot__c** and **SYS_OrgStorageSnapshot__c** obje
 
 Snapshots may be **scheduled** independently via the standard `Schedule Apex` button displayed
 in the **Apex Classes** Setup page.
-* The **SYS_OrgStorageSnapshot_SCH_TST** is usually scheduled once a week to really 
+* The **SYS_OrgLicenseSnapshot_SCH** is usually scheduled once a week to really 
+track visible evolution
+* The **SYS_OrgStorageSnapshot_SCH** is usually scheduled once a week to really 
 track visible evolution
 * The **SYS_PicklistSnapshot_SCH** is usually scheduled once a day to track any evolution to 
 the corresponding metadata (but it may be also be launched only manually after each new application
 deployment)
-* The **SYS_OrgLimitSnapshot_SCH_TST** may be scheduled multiple times per day to get finer view 
-of the limit evolution (for now, there is a single schedule for all limits).
+* The **SYS_OrgLimitSnapshot_SCH** may be scheduled multiple times per day (down to hourly) to get
+finer view of the limit evolution (for now, there is a single schedule for all limits).
 
 ⚠️ **Beware** that the **SYS_PicklistSnapshot_SCH** schedulable will systematically fail
 if bad Picklist names are registered in the `MasterLabel`of any **SYS_PicklistLabel__mdt** metadata
@@ -187,39 +274,52 @@ modification by launching the following command from the developer console:
 SYS_PicklistSnapshot_SCH.execute(null);
 ```
 
-ℹ️ Via setup, it is only possible to schedule the snapshots on a daily basis at a given hour. If you want to schedule 
-the **SYS_OrgLimitSnapshot_SCH** easily on an hourly basis, please run the following statement from _anonymous execution
-window_ of the _dev console_.
+ℹ️ Via setup, it is only possible to schedule the snapshots on a daily basis at a given hour.
+If you want to schedule the **SYS_OrgLimitSnapshot_SCH** easily on an hourly basis, please run
+the following statement from _anonymous execution window_ of the _dev console_.
 ```
 String schedule = '0 0 * * * ?'; 
 SYS_OrgLimitSnapshot_SCH job = new SYS_OrgLimitSnapshot_SCH(); 
 system.schedule('Hourly Org Limits Snaphots', schedule, job);
 ```
 
+
 ### CRM Analytics Recipe Scheduling
 
 After having deployed and configured the CRM Analytics application (and run the main Apex schedulable classes
-at least once to have actual data to ingest), you need to initialise the **SYS Org Storage** and **SYS Org Limits** 
-datasets by running the **SYS Monitoring Init** recipe.
+at least once to have actual data to ingest), you need to initialise the **SYS**
+datasets by running the **Init** recipes.
 
-![Dataset Initialisation](/media/DatasetInit.png)
+![Dataset Initialisation](/media/SnapshotInitRecipe.png)
 
-Then, you may then schedule the **SYS Monitoring** recipe to run automatically after connection synch 
-to periodically upsert these **SYS Org Storage** and **SYS Org Limits** datasets. This recipe enables to
-add new synched data into these history datasets.
+Then, you may then schedule the main **SYS** recipe to run automatically after connection synch 
+to periodically upsert these **SYS** datasets. These recipe enables to add new synched data into
+these history datasets.
 
-![Dataset Upsert](/media/DatasetUpdate.png)
+![Dataset Upsert](/media/SnapshotUpdateRecipe.png)
 
 
-ℹ️ If you keep a long history in the **SYS_OrgLimitSnapshot__c** and **SYS_OrgStorageSnapshot__c** 
-source objects, you may optimise the periodic dataset updates by filtering synced data to the most 
-recent days.
+⚠️ Beware to the **SYS_Picklist_Label_Synch** recipe for picklist values which works like the 
+**Init** recipes but should be scheduled like the main ones.
 
-⚠️ It is up to you to manage the amount of history data actually kept in the target **SYS Org Storage**
-and **SYS Org Limits** datasets. You may easily do it by adding a filtering node in the 
-**SYS Monitoring** recipe before merging the current dataset with the new data rows.
+![Dataset Upsert](/media/PicklistSynchRecipe.png)
 
-By properly configuring the retention periods, you may e.g.
+
+ℹ️ Within **CRM Analytics**, you may use multiple connections to your Org with different schedules,
+typically to synch:
+* Org limits on an hourly basis
+* Picklist values on a daily basis
+* Org License and Storage on a weekly basis
+
+
+ℹ️ If you keep a long history in the **SYS** source custom objects, you may optimise
+the periodic dataset updates by filtering synced data to the most recent days.
+
+⚠️ It is up to you to manage the amount of history data actually kept in the main target **SYS**
+datasets. You may easily do it by adding a filtering node in the main 
+**SYS** recipes before merging the current dataset with the new data rows.
+
+By properly configuring the retention periods in the Org and **CRM Analytics**, you may e.g.
 * keep only a 10 day sliding window of **Org Limit** data in the Salesforce core database
 * keep 1 year of **Org Limit** data in CRM Analytics
 
@@ -237,7 +337,7 @@ In the following example (leveraging legacy `dataflow` instead of `recipe`)
 * all records are then merged in a single dataset via an `append` node
 * the resulting dataset is then stored via a final `register` node with the 2 additional fields.
 
-![Data Aggregation DataFlow](/media/DataAggregation.png)
+![Multi-Org Aggregation DataFlow](/media/MultiOrgAggregation.png)
 
 ℹ️ The provided dashboards also need to be slightly adapted to display and filter according to
 the additional `Org Name` property.
