@@ -48,7 +48,7 @@ and **PermissionSetLicense** objects. Record Types segregate the two data source
 
 This object contains snapshots fetched via the standard **Apex OrgLimit API**.
 
-![Org Limits List View](/media/OrgLimit.png)
+![Org Limits List View](/media/OrgLimits.png)
 
 
 ### **Org Storage**
