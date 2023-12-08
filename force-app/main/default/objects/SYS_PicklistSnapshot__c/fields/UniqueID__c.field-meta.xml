@@ -6,7 +6,7 @@
     <externalId>true</externalId>
     <inlineHelpText>Unique ID of the record used for upserts at each schedulable execution</inlineHelpText>
     <label>UniqueID</label>
-    <length>100</length>
+    <length>200</length>
     <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Text</type>

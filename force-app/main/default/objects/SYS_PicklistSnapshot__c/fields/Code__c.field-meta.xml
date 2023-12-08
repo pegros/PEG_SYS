@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <inlineHelpText>Code (API Name) of a picklist field value</inlineHelpText>
     <label>Code</label>
-    <length>50</length>
+    <length>100</length>
     <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Text</type>

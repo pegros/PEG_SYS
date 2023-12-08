@@ -32,9 +32,14 @@
 public without sharing class SYS_PicklistSnapshot_SCH  implements Schedulable {
 
     /***
-    * @description Number of rows after which a new queueable execution is triggered.
+    * @description Number of upsert rows after which a new queueable execution is triggered.
     ***/
     static final private Integer MAX_ROWS = 1000;
+
+    /***
+    * @description Number of delete rows after which a new queueable execution is triggered.
+    ***/
+    static final private Integer MAX_DELETE_ROWS = 1000;
 
     /***
     * @description  Entry method for schedulable trigger.
@@ -52,7 +57,7 @@ public without sharing class SYS_PicklistSnapshot_SCH  implements Schedulable {
     public static void execute(SchedulableContext context) {
         System.debug('execute: START SYS_PicklistSnapshot_SCH');
 
-        List<SYS_PicklistLabel__mdt> picklistList  = [  SELECT MasterLabel FROM SYS_PicklistLabel__mdt WHERE isActive__c = true ];
+        List<SYS_PicklistLabel__mdt> picklistList  = [  SELECT MasterLabel, Picklist__c FROM SYS_PicklistLabel__mdt WHERE isActive__c = true ];
         if (Test.isRunningTest()) {
             picklistList = new List<SYS_PicklistLabel__mdt>();
             picklistList.add(new SYS_PicklistLabel__mdt(MasterLabel = 'Opportunity.StageName'));
@@ -92,8 +97,9 @@ public without sharing class SYS_PicklistSnapshot_SCH  implements Schedulable {
 
         for (SYS_PicklistLabel__mdt iter : picklistList) {
             system.debug('checkPicklists: processing picklistIter '  +  iter.MasterLabel);
-
-            String[] nameParts = iter.MasterLabel.split('\\.');
+            system.debug('checkPicklists: with picklist property '  +  iter.Picklist__c);
+            
+            String[] nameParts = (String.isEmpty(iter.Picklist__c) ? iter.MasterLabel.split('\\.') : iter.Picklist__c.split('\\.'));
             system.debug('checkPicklists: nameParts extracted '  + nameParts);
             if (nameParts.size() != 2) {
                 system.debug(LoggingLevel.ERROR,'checkPicklists: invalid picklist name in configuration ' + iter.MasterLabel);
@@ -143,46 +149,73 @@ public without sharing class SYS_PicklistSnapshot_SCH  implements Schedulable {
 
         private List<SYS_PicklistLabel__mdt> picklistList;
         private DateTime lastExecTS;
+        private Boolean  doFinalPurge;
 
         public SYS_PicklistSnapshot_QUE(List<SYS_PicklistLabel__mdt> picklistList, DateTime lastExecTS) {
-            System.debug('constructor: START SYS_PicklistSnapshot_QUE');
+            System.debug('constructor: START SYS_PicklistSnapshot_QUE (standard)');
             System.debug('constructor: #picklists provided ' + picklistList.size());
             this.picklistList = picklistList;
             System.debug('constructor: lastExecTS provided ' + lastExecTS);
             this.lastExecTS = lastExecTS;
-            System.debug('constructor: END SYS_PicklistSnapshot_QUE');
+            this.doFinalPurge = false;
+            System.debug('constructor: END SYS_PicklistSnapshot_QUE (standard)');
+        }
+
+        public SYS_PicklistSnapshot_QUE(DateTime lastExecTS) {
+            System.debug('constructor: START SYS_PicklistSnapshot_QUE (final purge)');
+            System.debug('constructor: lastExecTS provided ' + lastExecTS);
+            this.lastExecTS = lastExecTS;
+            this.doFinalPurge = true;
+            System.debug('constructor: END SYS_PicklistSnapshot_QUE (final purge)');
         }
 
         public void execute(QueueableContext context) {
             System.debug('execute: START SYS_PicklistSnapshot_QUE');
 
+            if (this.doFinalPurge) {
+                System.debug('execute: performing final purging');
+                purgeOldPicklists();
+            }
+            else {
+                System.debug('execute: performing picklist updates');
+                upsertPicklists();
+            }
+
+            System.debug('execute: END SYS_PicklistSnapshot_QUE');
+        }
+
+        private void upsertPicklists() {
+            System.debug('upsertPicklists: START');
+
             List<SYS_PicklistSnapshot__c> newSnapshots = new List<SYS_PicklistSnapshot__c>();         
             List<String> processedFields = new List<String>();
 
             Map<String, Schema.SObjectType> globalDesc = Schema.getGlobalDescribe();
-            Boolean doContinue = true;
+            Boolean doContinue = !(this.picklistList.isEmpty());
 
             while (doContinue) {
                 SYS_PicklistLabel__mdt iter = this.picklistList.remove(0);
-                system.debug('execute: processing picklistIter '  +  iter.MasterLabel);
+                system.debug('upsertPicklists: processing picklistIter '  +  iter.MasterLabel);
+                system.debug('upsertPicklists: with picklist property '  +  iter.Picklist__c);
                 processedFields.add(iter.MasterLabel);
 
-                String[] nameParts = iter.MasterLabel.split('\\.');
-                system.debug('execute: nameParts extracted '  + nameParts);
+                String iterName = (String.isEmpty(iter.Picklist__c) ? iter.MasterLabel : iter.Picklist__c);
+                String[] nameParts = iterName.split('\\.');
+                system.debug('upsertPicklists: nameParts extracted '  + nameParts);
                 Schema.DescribeSObjectResult objectDesc = globalDesc.get(nameParts[0])?.getDescribe();
-                system.debug('execute: objectDesc fetched '  + objectDesc);
+                system.debug('upsertPicklists: objectDesc fetched '  + objectDesc);
                 Schema.DescribeFieldResult fieldDesc   = objectDesc.fields.getMap().get(nameParts[1])?.getDescribe();
-                system.debug('execute: fieldDesc fetched ' + fieldDesc);
+                system.debug('upsertPicklists: fieldDesc fetched ' + fieldDesc);
                 
                 List<Schema.PicklistEntry>  fieldValues = fieldDesc.getPicklistValues();
-                system.debug('execute: fieldValues fetched with size '  + fieldValues.size());
+                system.debug('upsertPicklists: fieldValues fetched with size '  + fieldValues.size());
 
                 for(Schema.PicklistEntry iterValue : fieldValues) {
-                    system.debug(LoggingLevel.FINE,'execute: processing picklist value ' + iterValue);
+                    system.debug(LoggingLevel.FINE,'upsertPicklists: processing picklist value ' + iterValue);
                     newSnapshots.add(new SYS_PicklistSnapshot__c(
-                        Name        =  iter.MasterLabel + '.' + iterValue.getValue(),
-                        UniqueID__c =  iter.MasterLabel + '.' + iterValue.getValue(),
-                        Picklist__c = iter.MasterLabel,
+                        Name        = (iterName + '.' + iterValue.getValue()).left(80),
+                        UniqueID__c = iterName + '.' + iterValue.getValue(),
+                        Picklist__c = iterName,
                         Object__c   = nameParts[0],
                         Field__c    = nameParts[1],
                         Code__c     = iterValue.getValue(),
@@ -191,43 +224,73 @@ public without sharing class SYS_PicklistSnapshot_SCH  implements Schedulable {
                         IsDefault__c = iterValue.isDefaultValue()
                     ));
                 }
-                System.debug('execute: newPicklists updated to #items ' + newSnapshots.size());
+                System.debug('upsertPicklists: newPicklists updated to #items ' + newSnapshots.size());
 
                 if (newSnapshots.size() > MAX_ROWS ) {
-                    System.debug('execute: end of queueable process reached');
+                    System.debug('upsertPicklists: end of queueable process reached');
                     doContinue = false;
                 }
                 else if (this.picklistList.isEmpty()) {
-                    System.debug('execute: end of picklist list reached');
+                    System.debug('upsertPicklists: end of picklist list reached');
                     doContinue = false;
                 }
             }
-            System.debug('execute: all/max picklists processed with #items ' + processedFields.size());
+            System.debug('upsertPicklists: all/max picklists processed with #items ' + processedFields.size());
          
             upsert newSnapshots UniqueID__c;
-            System.debug('execute: newSnapshots upserted');
+            System.debug('upsertPicklists: newSnapshots upserted');
 
-            if (lastExecTS != null) {
+            if (this.lastExecTS != null) {
                 List<SYS_PicklistSnapshot__c> oldSnapshots = [
                     SELECT Id FROM SYS_PicklistSnapshot__c
                     WHERE SystemModStamp <= :this.lastExecTS AND Picklist__c in :processedFields];
-                System.debug('execute: old #Snapshots fetched ' + oldSnapshots.size());
+                System.debug('upsertPicklists: old #Snapshots fetched ' + oldSnapshots.size());
                 if (oldSnapshots.size() > 0) {
-                    System.debug('execute: deleting old Snapshots');
+                    System.debug('upsertPicklists: deleting old Snapshots');
                     delete oldSnapshots;
                 }
-            }
-            else {
-                System.debug('execute: no Snapshot to delete');
+                else {
+                    System.debug('upsertPicklists: no old Snapshot to delete');
+                }
             }
 
             if (this.picklistList.isEmpty()) {
-                System.debug('execute: END SYS_PicklistSnapshot_QUE / no more picklists to process');
+                System.debug('upsertPicklists: END / requeueing for final purge');
+                if ((!Test.isRunningTest()) && (this.lastExecTS != null)) {
+                    System.enqueueJob(new SYS_PicklistSnapshot_QUE(this.lastExecTS));
+                }
             }
             else {
-                System.debug('execute: END SYS_PickListSnapshot_QUE / requeueing for #picklist ' + this.picklistList.size());
+                System.debug('upsertPicklists: END / requeueing for #picklist ' + this.picklistList.size());
                 if (!Test.isRunningTest()) {
                     System.enqueueJob(new SYS_PicklistSnapshot_QUE(this.picklistList,this.lastExecTS));
+                }
+            }
+        }
+
+        private void purgeOldPicklists() {
+            System.debug('purgeOldPicklists: START');
+
+            List<SYS_PicklistSnapshot__c> obsoleteSnapshots = [
+                SELECT Id FROM SYS_PicklistSnapshot__c
+                WHERE SystemModStamp <= :this.lastExecTS
+                LIMIT :MAX_DELETE_ROWS];
+            System.debug('purgeOldPicklists: obsolete #Snapshots fetched ' + obsoleteSnapshots.size());
+            if (obsoleteSnapshots.size() > 0) {
+                System.debug('purgeOldPicklists: deleting old Snapshots');
+                delete obsoleteSnapshots;
+            }
+            else {
+                System.debug('purgeOldPicklists: no Snapshot to delete');
+            }
+
+            if (obsoleteSnapshots.size() < MAX_DELETE_ROWS) {
+                System.debug('upsertPicklists: END / all obsolete snapshots deleted');
+            }
+            else {
+                System.debug('upsertPicklists: END / requeueing for more purge ');
+                if (!Test.isRunningTest()) {
+                    System.enqueueJob(new SYS_PicklistSnapshot_QUE(this.lastExecTS));
                 }
             }
         }

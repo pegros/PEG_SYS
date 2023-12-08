@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Picklist__c</fullName>
+    <description>API Name of the Picklist, as &quot;ObjectApiName.FieldApiName&quot; (including &quot;__c&quot; for custom items).
+If not set, SYS logic uses the MasterLabel instead (e.g. to support long API Names).</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>API Name of the Picklist, as &quot;ObjectApiName.FieldApiName&quot; (including &quot;__c&quot; for custom items).
+If not set, SYS logic uses the MasterLabel instead (e.g. to support long API Names).</inlineHelpText>
+    <label>Picklist</label>
+    <length>100</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -75,11 +75,24 @@ public class SYS_PicklistSnapshot_SCH_TST {
     * @description Test of the main SYS_PicklistSnapshot_SCH execute logic.
     ***/
     static testmethod void testExecute() {
+        System.debug('testFinalPurge: START');
         SYS_PicklistSnapshot_SCH.execute(null);
 
         // second run to check lastExecTS !
+        System.debug('testFinalPurge: 2nd run');
         insert new SYS_PicklistSnapshot__c(Name='TEST');
         SYS_PicklistSnapshot_SCH.execute(null);
+        System.debug('testFinalPurge: END');
+    }
+    
+    /***
+    * @description Test of the final purge process of the SYS_PicklistSnapshot_QUE execute logic.
+    ***/
+    static testmethod void testFinalPurge() {
+        System.debug('testFinalPurge: START');
+        SYS_PicklistSnapshot_SCH.SYS_PicklistSnapshot_QUE finalQueue = new SYS_PicklistSnapshot_SCH.SYS_PicklistSnapshot_QUE(System.now());
+        finalQueue.execute(null);
+        System.debug('testFinalPurge: END');
     }
 
     /***

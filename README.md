@@ -229,10 +229,12 @@ schedulable tool.
 enable to set a data retention period (in days, everything being kept by default) and, for Org Limits,
 to bypass some uninteresting limits (as a comma separated list of limit names).
 * **Custom Metadata** records are available for the Picklist snapshot to define the set of
-picklist fields to consider (the label of which should be in the `ObjectApiName.FieldApiName` format)
+picklist fields to consider
+    * By default, the `MasterLabel` of `SYS_PicklistLabel` metadata records should be in the `ObjectApiName.FieldApiName` format to indicate which picklist to process.
+    * As there is a label size limitation, it is possible to set this value in the `Picklist` field instead (in which case this information supersedes that in the `MasterLabel`)
 
 ⚠️ You also need to grant the **SYS_UseScheduleTools** permission set to all users requiring
-access to the **SYS Monitoring** App or teh **SYS** custom objects (especially the user scheduling
+access to the **SYS Monitoring** App or the **SYS** custom objects (especially the user scheduling
 the snapshot Apex classes, see below).
 
 
