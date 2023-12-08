@@ -251,6 +251,9 @@ user the _CRM Analytics Admin_ rights before deploying the package.
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
+⚠️ **Beware**: When deploying a new version of the package, you will need to first unschedule the 
+Apex class executions (and re-schedule them afterwards).
+
 
 ## Configuration
 
