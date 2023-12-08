@@ -124,6 +124,41 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SYS_PermissionSnapshot__c.PermissionSetGroupId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SYS_PermissionSnapshot__c.PermissionSetGroup__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SYS_PermissionSnapshot__c.PermissionSetId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SYS_PermissionSnapshot__c.PermissionSet__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SYS_PermissionSnapshot__c.ProfileId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SYS_PermissionSnapshot__c.Profile__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>SYS_PermissionSnapshot__c.UniqueID__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>SYS_PicklistSnapshot__c.Code__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -197,6 +232,15 @@
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
+        <object>SYS_PermissionSnapshot__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
         <object>SYS_PicklistSnapshot__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
@@ -226,6 +270,10 @@
     </tabSettings>
     <tabSettings>
         <tab>SYS_OrgStorageSnapshot__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>SYS_PermissionSnapshot__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>

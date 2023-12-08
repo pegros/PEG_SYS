@@ -16,8 +16,10 @@ It stores snapshot data in custom object records (`CreationDate` corresponding t
 automatically purges old ones based on configurable durations (per object).
 
 It also addresses issues specific to **CRM Analytics** (or even **Marketing Cloud**), such as:
-* **Picklist Values** extraction for code-to-label picklist value mapping in DataFlows/Recipes (only the current
-  situation of the configured picklist fields being stored, i.e. no history)
+* **Picklist Values** extraction for code-to-label picklist value mapping in DataFlows/Recipes
+(only the current situation of the configured picklist fields being stored, i.e. no history)
+* **System Permissions** extraction for Profiles, Permission Set Groups and Permission Sets 
+(only the current situation being stored, i.e. no history)
 
 A **CRM Analytics** application is also provided to monitor the snapshots on a larger scale, with all 
 the recipes required to initiate and update the underlying datasets.
@@ -71,6 +73,15 @@ labels corresponding to picklist fields in datasets.
 ![Picklist List View](/media/Picklist.png)
 
 
+### **(System) Permissions**
+
+This object contains for Profiles, Permission Set Groups and Permission Sets the list of
+active System Permissions (via `permission...` fields) in order to load them as records
+in a **CRM Analytics** dataset.
+
+![Picklist List View](/media/Permission.png)
+
+
 ## CRM Analytics Application
 
 A standard **CRM Analytics** Application is provided and enables to access various Dashboards
@@ -112,6 +123,15 @@ values synched within **CRM Analytics**.
 ![Org Picklist Analytics Lens](/media/PicklistValuesControl.png)
 
 
+### **Permission Analysis**
+
+For the Profiles, Permission Set Groups and Permission Sets, a complex dashboard is provided
+to analyse each dimension of the permissions granted by each item within **CRM Analytics**:
+object and field accesses, system permissions, setup entity accesses...
+
+![Permissions Analytics Dashboard](/media/PermissionsAnalysis.png)
+
+
 ## Package Content
 
 The package is split into two folders respectively containing
@@ -126,11 +146,13 @@ The main package contains the following main components:
     * **SYS_OrgLimitSnapshot_SCH** to schedule and execute Org limit snapshots
     * **SYS_OrgStorageSnapshot_SCH** to schedule and execute Org Storage snapshots
     * **SYS_PicklistSnapshot_SCH** to schedule and execute Picklist Values snapshots
+    * **SYS_PermissionSnapshot_SCH** to schedule and execute System Permission snapshots
 * 4 Custom Objects (+ 4 associated tabs + 4 associated layouts)
     * **SYS_OrgLicenseSnapshot__c** to store Org License snapshot data
     * **SYS_OrgLimitSnapshot__c** to store Org limit snapshot data
     * **SYS_OrgStorageSnapshot__c** to store Org Storage snapshot data
     * **SYS_PicklistSnapshot__c** to store Picklist Value snapshot data
+    * **SYS_PermissionSnapshot__c** to store System Permission snapshot data
 * 3 Custom Settings
     * **SYS_OrgLicenseConfig__c** to configure Org license snapshot process
     * **SYS_OrgLimitConfig__c** to configure Org limit snapshot process
@@ -155,25 +177,36 @@ It also includes test elements for deployment:
 
 The CRM Analytics package contains the following components:
 * 1 CRM Analytics App
-    * **SYS Monitoring** containing all **SYS** datasets, dashboards and lens
-* 3 dashboards 
+    * **SYS Monitoring** containing all **SYS** datasets, dashboards and lenses
+* 4 dashboards 
     * **SYS Org Licenses Monitoring** for licenses
     * **SYS Org Limits Monitoring** for limits
     * **SYS Org Storage Monitoring** for Storage
+    * **SYS Org Permissions Analysis** for Permissions
 * 1 lens 
     * **SYS Org Picklist Status** for picklist values
-* 4 datasets
+* 12 datasets
     * **SYS OrgLicenses** for licenses
     * **SYS OrgLimits** for limits
     * **SYS OrgStorage** for Storage
     * **SYS OrgPicklist** for picklist values
-* 7 recipes (+ 7 related dataflows required for metadata deployment), with different purposes
+    * **SYS Profiles** for profiles
+    * **SYS PermissionSetGroups** for permission set groups
+    * **SYS PermissionSets** for permission sets
+    * **SYS ObjectPermissions** for object access permissions
+    * **SYS FieldPermissions** for field access permissions
+    * **SYS SetupAccess** for Setup Entity permissions
+    * **SYS SystemPermissions** for System permissions
+    * **SYS TabSettings** for Tab Settings (in permissions)
+* 8 recipes (+ 8 related dataflows required for metadata deployment), with different purposes
     * **SYS_Picklist_Label_Synch** simply overwrites the **SYS OrgPicklist** dataset
+    * **SYS_Org_Permission_Synch** overwrites most of the **Permission** related datasets
+    (from **SYS Profiles** to ** **SYS TabSettings**)
     * **SYS_Org_License_Monitoring_Init**, **SYS_Org_Limit_Monitoring_Init** and **SYS_Org_Storage_Monitoring_Init** enable to respectively initialise the **SYS OrgLicenses**, **SYS OrgLimits** and **SYS OrgStorage** datasets after
     initial synch (they should be run only once)
-    * **SYS_Org_License_Monitoring**, **SYS_Org_Limit_Monitoring** and **SYS_Org_Storage_Monitoring** enable to respectively extend the **SYS OrgLicenses**, **SYS OrgLimits** and **SYS OrgStorage** datasets after
-    each connection run to append new synched data (they should be scheduled according to the connection used
-    for each **SYS** custom object)
+    * **SYS_Org_License_Monitoring**, **SYS_Org_Limit_Monitoring** and **SYS_Org_Storage_Monitoring** enable to respectively extend the **SYS OrgLicenses**, **SYS OrgLimits** and **SYS OrgStorage**
+    datasets after each connection run to append new synched data (they should be schedule
+    according to the connection used for each **SYS** custom object)
 
 
 ## Installation
@@ -265,6 +298,8 @@ track visible evolution
 * The **SYS_PicklistSnapshot_SCH** is usually scheduled once a day to track any evolution to 
 the corresponding metadata (but it may be also be launched only manually after each new application
 deployment)
+* The **SYS_PermissionSnapshot_SCH** is usually scheduled once a day to update the status
+of System Permissions
 * The **SYS_OrgLimitSnapshot_SCH** may be scheduled multiple times per day (down to hourly) to get
 finer view of the limit evolution (for now, there is a single schedule for all limits).
 
@@ -301,7 +336,8 @@ these history datasets.
 ![Dataset Upsert](/media/SnapshotUpdateRecipe.png)
 
 
-⚠️ Beware to the **SYS_Picklist_Label_Synch** recipe for picklist values which works like the 
+⚠️ Beware to the **SYS_Picklist_Label_Synch**  and **SYS_Org_Permission_Synch** recipes
+respectively for picklist values and permission data which work like the 
 **Init** recipes but should be scheduled like the main ones.
 
 ![Dataset Upsert](/media/PicklistSynchRecipe.png)
@@ -310,7 +346,7 @@ these history datasets.
 ℹ️ Within **CRM Analytics**, you may use multiple connections to your Org with different schedules,
 typically to synch:
 * Org limits on an hourly basis
-* Picklist values on a daily basis
+* Picklist values and Permissions on a daily basis
 * Org License and Storage on a weekly basis
 
 

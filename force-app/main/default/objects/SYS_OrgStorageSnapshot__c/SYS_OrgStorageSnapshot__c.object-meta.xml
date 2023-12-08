@@ -154,6 +154,7 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
+    <gender>Feminine</gender>
     <label>SYS OrgStorage Snapshot</label>
     <nameField>
         <label>Item Name</label>

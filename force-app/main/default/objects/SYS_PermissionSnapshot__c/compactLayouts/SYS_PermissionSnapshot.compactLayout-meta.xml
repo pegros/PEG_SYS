@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SYS_PermissionSnapshot</fullName>
+    <fields>Name</fields>
+    <fields>PermissionSet__c</fields>
+    <fields>Profile__c</fields>
+    <fields>PermissionSetGroup__c</fields>
+    <label>SYS Permission Snapshot</label>
+</CompactLayout>

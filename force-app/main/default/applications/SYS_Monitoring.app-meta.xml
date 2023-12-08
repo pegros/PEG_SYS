@@ -17,6 +17,7 @@
     <tabs>SYS_OrgLicenseSnapshot__c</tabs>
     <tabs>SYS_OrgLimitSnapshot__c</tabs>
     <tabs>SYS_OrgStorageSnapshot__c</tabs>
+    <tabs>SYS_PermissionSnapshot__c</tabs>
     <tabs>SYS_PicklistSnapshot__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>SYS_Monitoring_UtilityBar</utilityBar>
