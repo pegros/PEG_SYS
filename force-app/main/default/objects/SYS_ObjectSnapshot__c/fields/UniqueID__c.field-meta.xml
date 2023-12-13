@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UniqueID__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>Unique ID of the record used for upserts at each schedulable execution</description>
+    <externalId>true</externalId>
+    <inlineHelpText>Unique ID of the record used for upserts at each schedulable execution</inlineHelpText>
+    <label>Unique ID</label>
+    <length>120</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>
