@@ -20,6 +20,7 @@ It also addresses issues specific to **CRM Analytics** (or even **Marketing Clou
 (only the current situation of the configured picklist fields being stored, i.e. no history)
 * **System Permissions** extraction for Profiles, Permission Set Groups and Permission Sets 
 (only the current situation being stored, i.e. no history)
+* **SObject** extraction from System metadata (only the current situation being stored, i.e. no history)
 
 A **CRM Analytics** application is also provided to monitor the snapshots on a larger scale, with all 
 the recipes required to initiate and update the underlying datasets.
@@ -80,6 +81,13 @@ active System Permissions (via `permission...` fields) in order to load them as 
 in a **CRM Analytics** dataset.
 
 ![Picklist List View](/media/Permission.png)
+
+
+### **Objects**
+
+This object contains the list of all SObjects defined on the platform.
+
+![Object List View](/media/Objects.png)
 
 
 ## CRM Analytics Application
@@ -147,12 +155,14 @@ The main package contains the following main components:
     * **SYS_OrgStorageSnapshot_SCH** to schedule and execute Org Storage snapshots
     * **SYS_PicklistSnapshot_SCH** to schedule and execute Picklist Values snapshots
     * **SYS_PermissionSnapshot_SCH** to schedule and execute System Permission snapshots
-* 4 Custom Objects (+ 4 associated tabs + 4 associated layouts)
+    * **SYS_ObjectSnapshot_SCH** to schedule and execute SObject snapshots
+* 6 Custom Objects (+ 6 associated tabs + 6 associated layouts)
     * **SYS_OrgLicenseSnapshot__c** to store Org License snapshot data
     * **SYS_OrgLimitSnapshot__c** to store Org limit snapshot data
     * **SYS_OrgStorageSnapshot__c** to store Org Storage snapshot data
     * **SYS_PicklistSnapshot__c** to store Picklist Value snapshot data
     * **SYS_PermissionSnapshot__c** to store System Permission snapshot data
+    * **SYS_ObjectSnapshot__c** to store Object snapshot data
 * 3 Custom Settings
     * **SYS_OrgLicenseConfig__c** to configure Org license snapshot process
     * **SYS_OrgLimitConfig__c** to configure Org limit snapshot process
@@ -259,13 +269,14 @@ Apex class executions (and re-schedule them afterwards).
 
 ### Main Apex Package
 
-Process configuration rely on custom setting or custom metadata records depending on the
+Process configuration rely on _custom setting_ or _custom metadata_ records depending on the
 schedulable tool.
-* **Custom Setting** records are available for the Org Limits and Storage snapshots and basically
-enable to set a data retention period (in days, everything being kept by default) and, for Org Limits,
-to bypass some uninteresting limits (as a comma separated list of limit names).
-* **Custom Metadata** records are available for the Picklist snapshot to define the set of
-picklist fields to consider
+* **Custom Setting** records
+    * They are available for the Org Limits and Storage snapshots
+    * They basically enable to set a data retention period (in days, everything being kept by default)
+    * For Org Limits, it also enables to bypass some uninteresting limits (as a comma separated list of limit names).
+* **Custom Metadata** records
+    * They are available for the Picklist snapshot to define the set of picklist fields to consider
     * By default, the `MasterLabel` of `SYS_PicklistLabel` metadata records should be in the `ObjectApiName.FieldApiName` format to indicate which picklist to process.
     * As there is a label size limitation, it is possible to set this value in the `Picklist` field instead (in which case this information supersedes that in the `MasterLabel`)
 
@@ -294,17 +305,24 @@ and all custom fields.
 
 Snapshots may be **scheduled** independently via the standard `Schedule Apex` button displayed
 in the **Apex Classes** Setup page.
-* The **SYS_OrgLicenseSnapshot_SCH** is usually scheduled once a week to really 
+* **SYS_OrgLicenseSnapshot_SCH** is usually scheduled once a week to really 
 track visible evolution
-* The **SYS_OrgStorageSnapshot_SCH** is usually scheduled once a week to really 
+* **SYS_OrgStorageSnapshot_SCH** is usually scheduled once a week to really 
 track visible evolution
-* The **SYS_PicklistSnapshot_SCH** is usually scheduled once a day to track any evolution to 
+* **SYS_PicklistSnapshot_SCH** is usually scheduled once a day to track any evolution to 
 the corresponding metadata (but it may be also be launched only manually after each new application
 deployment)
-* The **SYS_PermissionSnapshot_SCH** is usually scheduled once a day to update the status
+* **SYS_PermissionSnapshot_SCH** is usually scheduled once a day to update the status
 of System Permissions
-* The **SYS_OrgLimitSnapshot_SCH** may be scheduled multiple times per day (down to hourly) to get
+* **SYS_OrgLimitSnapshot_SCH** may be scheduled multiple times per day (down to hourly) to get
 finer view of the limit evolution (for now, there is a single schedule for all limits).
+
+ℹ️ For now, **SYS_ObjectSnapshot_SCH** is implemented as a schedulable class but is rather meant 
+for on-demand execution for analysis. It may be launched with the following command from the
+developer console:
+```
+SYS_ObjectSnapshot_SCH.execute(null);
+```
 
 ⚠️ **Beware** that the **SYS_PicklistSnapshot_SCH** schedulable will systematically fail
 if bad Picklist names are registered in the `MasterLabel`of any **SYS_PicklistLabel__mdt** metadata
