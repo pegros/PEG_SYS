@@ -249,14 +249,12 @@ you may use the following button.<br/>
 ⚠️ **Beware** to have properly activated _CRM Analytics_ on your target Org and granted your
 user the _CRM Analytics Admin_ rights before deploying the package.
 
-<br/>
 
 <a href="https://githubsfdeploy.herokuapp.com?ref=master">
   <img alt="Deploy complete Package to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
-<br/>
 
 To deploy only the **main Apex package** to your Org, you may use the following button instead.
 
@@ -265,7 +263,7 @@ To deploy only the **main Apex package** to your Org, you may use the following 
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
-<br/>
+
 ⚠️ **Beware**: When deploying a new version of the package, you will need to first unschedule the 
 Apex class executions (and re-schedule them afterwards).
 
