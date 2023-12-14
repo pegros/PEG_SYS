@@ -244,13 +244,6 @@ For a quick and easy deployment, you may alternatively use the following deploy 
 leveraging the **[GitHub Salesforce Deploy Tool](https://github.com/afawcett/githubsfdeploy)**
 implemented by [Andrew Fawcett](https://andyinthecloud.com/2013/09/24/deploy-direct-from-github-to-salesforce/).
 
-To deploy only the **main Apex package** to your Org, you may use the following button.
-
-<a href="https://githubsfdeploy.herokuapp.com?ref=apexOnly">
-  <img alt="Deploy main Apex Package to Salesforce"
-       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
-</a>
-
 To deploy the **whole package** (i.e. with the CRM Analytics App) to your Org,
 you may use the following button.<br/>
 ⚠️ **Beware** to have properly activated _CRM Analytics_ on your target Org and granted your
@@ -261,9 +254,58 @@ user the _CRM Analytics Admin_ rights before deploying the package.
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
+<br/>
+To deploy only the **main Apex package** to your Org, you may use the following button instead.
+
+<a href="https://githubsfdeploy.herokuapp.com?ref=apexOnly">
+  <img alt="Deploy main Apex Package to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
+</a>
+
+<br/>
 ⚠️ **Beware**: When deploying a new version of the package, you will need to first unschedule the 
 Apex class executions (and re-schedule them afterwards).
 
+In order to easily unschedule all scheduled Apex class jobs of the **PEG_SYS** package,
+please run the following statement from _anonymous execution window_ of the _dev console_.
+```
+List<AsyncApexJob> scheduledJobs = [SELECT  ApexClass.Name, CronTriggerId,
+                                            CronTrigger.CronExpression 
+                                    FROM AsyncApexJob 
+                                    WHERE  JobType='ScheduledApex'
+                                        AND CronTrigger.CronExpression != null
+                                        AND ApexClass.Name LIKE 'SYS_%'];
+if (scheduledJobs != null && scheduledJobs.size()>0) {
+    for (AsyncApexJob iter : scheduledJobs) {
+        System.abortJob(iter.CronTriggerId);
+    }
+}
+```
+
+After deployment, you may reschedule all your jobs via a command like the following.
+```
+String hourlySchedule = '0 0 * * * ?'; 
+String dailySchedule = '0 0 1 * * ?'; 
+String weeklySchedule = '0 0 1 ? * 1'; 
+
+SYS_OrgLicenseSnapshot_SCH job1 = new SYS_OrgLicenseSnapshot_SCH(); 
+system.schedule('Weekly Org License Snaphots', weeklySchedule, job1);
+
+SYS_OrgLimitSnapshot_SCH job2 = new SYS_OrgLimitSnapshot_SCH(); 
+system.schedule('Hourly Org Limits Snaphots', hourlySchedule, job2);
+
+SYS_OrgStorageSnapshot_SCH job3 = new SYS_OrgStorageSnapshot_SCH(); 
+system.schedule('Weekly Org Storage Snaphots', weeklySchedule, job3);
+
+SYS_PicklistSnapshot_SCH job4 = new SYS_PicklistSnapshot_SCH(); 
+system.schedule('Daily Picklist Snaphots', dailySchedule, job4);
+
+SYS_PermissionSnapshot_SCH job5 = new SYS_PermissionSnapshot_SCH(); 
+system.schedule('Daily Permission Snaphots', dailySchedule, job5);
+
+SYS_ObjectSnapshot_SCH job6 = new SYS_ObjectSnapshot_SCH(); 
+system.schedule('Daily Object Snaphots', dailySchedule, job6);
+```
 
 ## Configuration
 
