@@ -101,7 +101,7 @@ public without sharing class SYS_ObjectSnapshot_SCH  implements Schedulable {
                     UniqueID__c = iterName,
                     Type__c = iterType,
                     isCustom__c = false,
-                    isCustomSet<ting__c = false,
+                    isCustomSetting__c = false,
                     Label__c = iterName,
                     rtCount__c = 0
                 ));   
