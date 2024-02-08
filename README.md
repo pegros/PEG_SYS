@@ -210,8 +210,7 @@ The CRM Analytics package contains the following components:
     * **SYS TabSettings** for Tab Settings (in permissions)
 * 8 recipes (+ 8 related dataflows required for metadata deployment), with different purposes
     * **SYS_Picklist_Label_Synch** simply overwrites the **SYS OrgPicklist** dataset
-    * **SYS_Org_Permission_Synch** overwrites most of the **Permission** related datasets
-    (from **SYS Profiles** to ** **SYS TabSettings**)
+    * **SYS_Org_Permission_Synch** overwrites most of the **Permission** related datasets (from **SYS Profiles** to **SYS TabSettings**)
     * **SYS_Org_License_Monitoring_Init**, **SYS_Org_Limit_Monitoring_Init** and **SYS_Org_Storage_Monitoring_Init** enable to respectively initialise the **SYS OrgLicenses**, **SYS OrgLimits** and **SYS OrgStorage** datasets after
     initial synch (they should be run only once)
     * **SYS_Org_License_Monitoring**, **SYS_Org_Limit_Monitoring** and **SYS_Org_Storage_Monitoring** enable to respectively extend the **SYS OrgLicenses**, **SYS OrgLimits** and **SYS OrgStorage**
