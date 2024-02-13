@@ -33,6 +33,11 @@
 public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
 
     /***
+    * @description Static constants indicating the limit of deleted records
+    ***/
+    static final public Integer MAX_DELETES = 9000;
+
+    /***
     * @description Custom Setting to configure the schedulable process.
     ***/
     static final public SYS_OrgStorageConfig__c SETTING = SYS_OrgStorageConfig__c.getInstance();
@@ -287,7 +292,7 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
                 Date purgeLimit = System.today().addDays(- ((Integer)(SETTING.PurgeAfterDays__c)));
                 System.debug('execute: purgeLimit set to ' + purgeLimit);
                 List<SYS_OrgStorageSnapshot__c> snapshots2delete =
-                    [select Id from SYS_OrgStorageSnapshot__c where CreatedDate < :purgeLimit];
+                    [SELECT Id FROM SYS_OrgStorageSnapshot__c WHERE CreatedDate < :purgeLimit LIMIT :MAX_DELETES];
                 if (snapshots2delete?.size() > 0) {
                     System.debug('execute: deleting #snapshots ' + snapshots2delete.size());
                     delete snapshots2delete;
