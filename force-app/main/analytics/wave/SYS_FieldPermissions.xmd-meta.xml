@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WaveXmd xmlns="http://soap.sforce.com/2006/04/metadata">
+    <dataset>SYS_FieldPermissions</dataset>
+    <dimensions>
+        <field>PSet.Type</field>
+        <isDerived>false</isDerived>
+        <label>PSet Type</label>
+        <sortIndex>0</sortIndex>
+    </dimensions>
+    <dimensions>
+        <field>SobjectType</field>
+        <isDerived>false</isDerived>
+        <label>Object Name</label>
+        <sortIndex>1</sortIndex>
+    </dimensions>
+</WaveXmd>

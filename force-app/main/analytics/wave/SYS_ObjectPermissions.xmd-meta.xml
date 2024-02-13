@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WaveXmd xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <dataset>SYS_ObjectPermissions</dataset>
+    <dimensions>
+        <conditionalFormatting>
+            <formattingBins>
+                <bin>CRUD-RU</bin>
+                <formatValue>#B50E03</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>0</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>CRU-R</bin>
+                <formatValue>#E84340</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>1</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>R-R</bin>
+                <formatValue>#FF9897</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>2</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>R</bin>
+                <formatValue>#3AE867</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>3</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>RU</bin>
+                <formatValue>#98B1FF</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>4</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>CRU</bin>
+                <formatValue>#4269E9</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>5</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>RUD</bin>
+                <formatValue>#0D34B6</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>6</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>CRUD</bin>
+                <formatValue>#E8963B</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>7</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>CR</bin>
+                <formatValue>#00B531</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>8</sortIndex>
+            </formattingBins>
+            <property>chartColor</property>
+            <referenceField>CRUD</referenceField>
+            <sortIndex xsi:nil="true"/>
+            <type>categories</type>
+        </conditionalFormatting>
+        <field>CRUD</field>
+        <isDerived>false</isDerived>
+        <sortIndex>0</sortIndex>
+    </dimensions>
+    <dimensions>
+        <field>PSet.Type</field>
+        <isDerived>false</isDerived>
+        <label>PSet Type</label>
+        <sortIndex>1</sortIndex>
+    </dimensions>
+    <dimensions>
+        <field>SobjectType</field>
+        <isDerived>false</isDerived>
+        <label>Object Name</label>
+        <sortIndex>2</sortIndex>
+    </dimensions>
+</WaveXmd>
