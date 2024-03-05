@@ -140,6 +140,15 @@ object and field accesses, system permissions, setup entity accesses...
 ![Permissions Analytics Dashboard](/media/PermissionsAnalysis.png)
 
 
+### **Setup Audit Trail Analysis**
+
+For the Setup Audit Trail, a simple dashboard is provided to query through
+the possibly large amount of Setup Audit Trail events, e.g. by focusing on a
+specific User or operation.
+
+![Setup Audit Trail Analytics Dashboard](/media/SetupAuditTrailMonitoring.png)
+
+
 ## Package Content
 
 The package is split into two folders respectively containing
@@ -188,14 +197,15 @@ It also includes test elements for deployment:
 The CRM Analytics package contains the following components:
 * 1 CRM Analytics App
     * **SYS Monitoring** containing all **SYS** datasets, dashboards and lenses
-* 4 dashboards 
+* 5 dashboards 
     * **SYS Org Licenses Monitoring** for licenses
     * **SYS Org Limits Monitoring** for limits
     * **SYS Org Storage Monitoring** for Storage
     * **SYS Org Permissions Analysis** for Permissions
+    * **SYS Org Setup Audit Trail** for Audit Trail investigations
 * 1 lens 
     * **SYS Org Picklist Status** for picklist values
-* 12 datasets
+* 13 datasets
     * **SYS OrgLicenses** for licenses
     * **SYS OrgLimits** for limits
     * **SYS OrgStorage** for Storage
@@ -208,15 +218,16 @@ The CRM Analytics package contains the following components:
     * **SYS SetupAccess** for Setup Entity permissions
     * **SYS SystemPermissions** for System permissions
     * **SYS TabSettings** for Tab Settings (in permissions)
-* 8 recipes (+ 8 related dataflows required for metadata deployment), with different purposes
+    * **SYS SetupAuditTrail** for Audit Trail data
+* 9 recipes (+ related dataflows required for metadata deployment), with different purposes
     * **SYS_Picklist_Label_Synch** simply overwrites the **SYS OrgPicklist** dataset
+    * **SYS_SetupAuditTrail_Synch** simply overwrites the **SYS SetupAuditTrail** dataset
     * **SYS_Org_Permission_Synch** overwrites most of the **Permission** related datasets (from **SYS Profiles** to **SYS TabSettings**)
     * **SYS_Org_License_Monitoring_Init**, **SYS_Org_Limit_Monitoring_Init** and **SYS_Org_Storage_Monitoring_Init** enable to respectively initialise the **SYS OrgLicenses**, **SYS OrgLimits** and **SYS OrgStorage** datasets after
     initial synch (they should be run only once)
     * **SYS_Org_License_Monitoring**, **SYS_Org_Limit_Monitoring** and **SYS_Org_Storage_Monitoring** enable to respectively extend the **SYS OrgLicenses**, **SYS OrgLimits** and **SYS OrgStorage**
     datasets after each connection run to append new synched data (they should be schedule
     according to the connection used for each **SYS** custom object)
-
 
 ## Installation
 
