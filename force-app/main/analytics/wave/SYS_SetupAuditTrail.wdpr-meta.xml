@@ -3,5 +3,5 @@
     <content xsi:nil="true"/>
     <dataflow>SYS_SetupAuditTrail</dataflow>
     <format>R3</format>
-    <masterLabel>SYS SetupAuditTrail</masterLabel>
+    <masterLabel>SYS SetupAuditTrail Synch</masterLabel>
 </WaveRecipe>
