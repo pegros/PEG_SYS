@@ -1,0 +1,282 @@
+{
+  "version" : "60.0",
+  "nodes" : {
+    "LOAD_DATASET0" : {
+      "action" : "load",
+      "sources" : [ ],
+      "parameters" : {
+        "fields" : [ "Id", "Action", "Section", "CreatedDate", "CreatedById", "Display", "DelegateUser" ],
+        "dataset" : {
+          "type" : "connectedDataset",
+          "label" : "SetupAuditTrail",
+          "connectionName" : "SFDC_LOCAL",
+          "sourceObjectName" : "SetupAuditTrail"
+        },
+        "sampleDetails" : {
+          "type" : "TopN",
+          "sortBy" : [ ]
+        }
+      }
+    },
+    "LOAD_DATASET1" : {
+      "action" : "load",
+      "sources" : [ ],
+      "parameters" : {
+        "fields" : [ "Id", "Username", "LastName", "FirstName", "Name", "CompanyName", "Division", "Department", "Title", "Street", "City", "State", "PostalCode", "Country", "Alias", "CommunityNickname", "IsActive", "UserRoleId", "ProfileId", "UserType" ],
+        "dataset" : {
+          "type" : "connectedDataset",
+          "label" : "User",
+          "connectionName" : "SFDC_LOCAL",
+          "sourceObjectName" : "User"
+        },
+        "sampleDetails" : {
+          "type" : "TopN",
+          "sortBy" : [ ]
+        }
+      }
+    },
+    "JOIN0" : {
+      "action" : "join",
+      "sources" : [ "LOAD_DATASET0", "JOIN1" ],
+      "schema" : {
+        "fields" : [ ],
+        "slice" : {
+          "mode" : "DROP",
+          "ignoreMissingFields" : true,
+          "fields" : [ ]
+        }
+      },
+      "parameters" : {
+        "joinType" : "LOOKUP",
+        "leftKeys" : [ "CreatedById" ],
+        "rightQualifier" : "User",
+        "rightKeys" : [ "Id" ]
+      }
+    },
+    "JOIN1" : {
+      "action" : "join",
+      "sources" : [ "LOAD_DATASET1", "LOAD_DATASET2" ],
+      "schema" : {
+        "fields" : [ ],
+        "slice" : {
+          "mode" : "DROP",
+          "ignoreMissingFields" : true,
+          "fields" : [ ]
+        }
+      },
+      "parameters" : {
+        "joinType" : "LOOKUP",
+        "leftKeys" : [ "ProfileId" ],
+        "rightQualifier" : "Profile",
+        "rightKeys" : [ "Id" ]
+      }
+    },
+    "LOAD_DATASET2" : {
+      "action" : "load",
+      "sources" : [ ],
+      "parameters" : {
+        "fields" : [ "Id", "Name", "PermissionsManageUsers", "PermissionsModifyAllData", "PermissionsCustomizeApplication", "PermissionsViewSetup", "PermissionsViewAllData" ],
+        "dataset" : {
+          "type" : "connectedDataset",
+          "label" : "Profile",
+          "connectionName" : "SFDC_LOCAL",
+          "sourceObjectName" : "Profile"
+        },
+        "sampleDetails" : {
+          "type" : "TopN",
+          "sortBy" : [ ]
+        }
+      }
+    },
+    "OUTPUT0" : {
+      "action" : "save",
+      "sources" : [ "FORMULA3" ],
+      "parameters" : {
+        "fields" : [ ],
+        "dataset" : {
+          "type" : "analyticsDataset",
+          "label" : "SYS SetupAuditTrail",
+          "name" : "SYS_SeyupAuditTrail",
+          "folderName" : "SYS_Monitoring"
+        },
+        "measuresToCurrencies" : [ ]
+      }
+    },
+    "FORMULA0" : {
+      "action" : "formula",
+      "sources" : [ "JOIN0" ],
+      "parameters" : {
+        "expressionType" : "SQL",
+        "fields" : [ {
+          "type" : "TEXT",
+          "name" : "CreatedDateOutput",
+          "label" : "CreatedDate (Output)",
+          "formulaExpression" : "date_format(\"CreatedDate\", 'yyyy-MM-dd hh:mm:ss')",
+          "precision" : 255,
+          "defaultValue" : ""
+        } ]
+      }
+    },
+    "FORMULA1" : {
+      "action" : "formula",
+      "sources" : [ "FORMULA0" ],
+      "parameters" : {
+        "expressionType" : "SQL",
+        "fields" : [ {
+          "type" : "TEXT",
+          "name" : "Operation",
+          "label" : "Operation",
+          "formulaExpression" : "case contains(Display, ':')\nwhen true then substr(Display, 0,instr(Display,':') -1)\nelse Display\nend",
+          "precision" : 255,
+          "defaultValue" : ""
+        } ]
+      }
+    },
+    "FORMULA2" : {
+      "action" : "formula",
+      "sources" : [ "FORMULA1" ],
+      "parameters" : {
+        "expressionType" : "SQL",
+        "fields" : [ {
+          "type" : "TEXT",
+          "name" : "Profile",
+          "label" : "Profile",
+          "formulaExpression" : "coalesce(\"User.Profile.Name\",'Undefined')",
+          "precision" : 100,
+          "defaultValue" : ""
+        } ]
+      }
+    },
+    "FORMULA3" : {
+      "action" : "formula",
+      "sources" : [ "FORMULA2" ],
+      "parameters" : {
+        "expressionType" : "SQL",
+        "fields" : [ {
+          "type" : "TEXT",
+          "name" : "User",
+          "label" : "User",
+          "formulaExpression" : "coalesce(\"User.Name\",CreatedById)",
+          "precision" : 100,
+          "defaultValue" : ""
+        } ]
+      }
+    }
+  },
+  "ui" : {
+    "nodes" : {
+      "LOAD_DATASET0" : {
+        "label" : "SetupAuditTrail",
+        "type" : "LOAD_DATASET",
+        "top" : 112,
+        "left" : 112,
+        "parameters" : {
+          "sampleSize" : 2000
+        }
+      },
+      "LOAD_DATASET1" : {
+        "label" : "User",
+        "type" : "LOAD_DATASET",
+        "top" : 252,
+        "left" : 112,
+        "parameters" : {
+          "sampleSize" : 2000
+        }
+      },
+      "JOIN0" : {
+        "label" : "Audit Trail + User",
+        "description" : "",
+        "type" : "JOIN",
+        "top" : 112,
+        "left" : 252
+      },
+      "JOIN1" : {
+        "label" : "User + Profile",
+        "description" : "",
+        "type" : "JOIN",
+        "top" : 252,
+        "left" : 252
+      },
+      "LOAD_DATASET2" : {
+        "label" : "Profile",
+        "type" : "LOAD_DATASET",
+        "top" : 392,
+        "left" : 112,
+        "parameters" : {
+          "sampleSize" : 2000
+        }
+      },
+      "OUTPUT0" : {
+        "label" : "AuditTrail",
+        "description" : "",
+        "type" : "OUTPUT",
+        "top" : 112,
+        "left" : 532
+      },
+      "TRANSFORM0" : {
+        "label" : "Finalize Audit Trail",
+        "description" : "",
+        "type" : "TRANSFORM",
+        "top" : 112,
+        "left" : 392,
+        "graph" : {
+          "FORMULA0" : {
+            "parameters" : {
+              "type" : "BASE_FORMULA_UI"
+            },
+            "label" : "CreatedDateOutput"
+          },
+          "FORMULA1" : {
+            "parameters" : {
+              "type" : "BASE_FORMULA_UI"
+            },
+            "label" : "Operation"
+          },
+          "FORMULA2" : {
+            "parameters" : {
+              "type" : "BASE_FORMULA_UI"
+            },
+            "label" : "Profile"
+          },
+          "FORMULA3" : {
+            "parameters" : {
+              "type" : "BASE_FORMULA_UI"
+            },
+            "label" : "User"
+          }
+        },
+        "connectors" : [ {
+          "source" : "FORMULA0",
+          "target" : "FORMULA1"
+        }, {
+          "source" : "FORMULA1",
+          "target" : "FORMULA2"
+        }, {
+          "source" : "FORMULA2",
+          "target" : "FORMULA3"
+        } ]
+      }
+    },
+    "connectors" : [ {
+      "source" : "LOAD_DATASET0",
+      "target" : "JOIN0"
+    }, {
+      "source" : "JOIN1",
+      "target" : "JOIN0"
+    }, {
+      "source" : "LOAD_DATASET1",
+      "target" : "JOIN1"
+    }, {
+      "source" : "LOAD_DATASET2",
+      "target" : "JOIN1"
+    }, {
+      "source" : "TRANSFORM0",
+      "target" : "OUTPUT0"
+    }, {
+      "source" : "JOIN0",
+      "target" : "TRANSFORM0"
+    } ],
+    "hiddenColumns" : [ ]
+  },
+  "runMode" : "full"
+}
