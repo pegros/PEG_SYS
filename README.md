@@ -260,11 +260,10 @@ user the _CRM Analytics Admin_ rights before deploying the package.
 <table>
 <tr>
 <th>
-To deploy the **whole package** (i.e. with the CRM Analytics App) to your Org,
-you may use the following button.<br/>
+Whole package (Apex + CRM-Analytics)<br/>
 </th>
 <th>
-To deploy only the **main Apex package** to your Org, you may use the following button instead.
+Apex only package.
 </th>
 </tr>
 <tr>
