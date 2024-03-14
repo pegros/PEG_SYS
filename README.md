@@ -257,24 +257,31 @@ implemented by [Andrew Fawcett](https://andyinthecloud.com/2013/09/24/deploy-dir
 ⚠️ **Beware** to have properly activated _CRM Analytics_ on your target Org and granted your
 user the _CRM Analytics Admin_ rights before deploying the package.
 
+<table>
+<tr>
+<th>
 To deploy the **whole package** (i.e. with the CRM Analytics App) to your Org,
 you may use the following button.<br/>
-
+</th>
+<th>
+To deploy only the **main Apex package** to your Org, you may use the following button instead.
+</th>
+</tr>
+<tr>
+<td>
 <a href="https://githubsfdeploy.herokuapp.com?ref=master">
   <img alt="Deploy complete Package to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
-
-<br/>
-
-To deploy only the **main Apex package** to your Org, you may use the following button instead.
-
+</td>
+<td>
 <a href="https://githubsfdeploy.herokuapp.com?ref=apexOnly">
   <img alt="Deploy main Apex Package to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
-
-<br/>
+</td>
+</tr>
+</table>
 
 ⚠️ **Beware**: When deploying a new version of the package, you will need to first unschedule the 
 Apex class executions (and re-schedule them afterwards).
