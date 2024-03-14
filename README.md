@@ -257,7 +257,7 @@ implemented by [Andrew Fawcett](https://andyinthecloud.com/2013/09/24/deploy-dir
 ⚠️ **Beware** to have properly activated _CRM Analytics_ on your target Org and granted your
 user the _CRM Analytics Admin_ rights before deploying the package.
 
-<table style="width:100%;">
+<table style="width:100% !important;">
 <tr>
 <th>
 Whole package (Apex + CRM-Analytics)<br/>
