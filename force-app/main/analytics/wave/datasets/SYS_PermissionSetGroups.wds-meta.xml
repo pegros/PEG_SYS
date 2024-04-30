@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<WaveDataset xmlns="http://soap.sforce.com/2006/04/metadata">
-    <application>SYS_Monitoring</application>
-    <description>Created from the SYS Permission Snapshot Synch recipe.</description>
-    <masterLabel>SYS PermissionSet Groups</masterLabel>
-    <type>default</type>
-</WaveDataset>
