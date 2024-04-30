@@ -249,7 +249,9 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
         }
         */
 
-        // NEW VERSION MORE SCALABLE
+        /***
+        * @description  Main public method executing the logic of the queueable sub-process
+        ***/
         public void execute(QueueableContext context) {
             System.debug('execute: START SYS_OrgStorageSnapshot_QUE');
 
@@ -272,8 +274,9 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
             List<SYS_OrgStorageSnapshot__c> newSnapshots = new List<SYS_OrgStorageSnapshot__c>();
             Integer index = 0;
             while (index != -1) {
-                System.debug('parseNextSection: processing next section from index ' + index);
-                index = parseNextSection(snapshotContent,index,newSnapshots);
+                System.debug('execute: processing next section from index ' + index);
+                System.debug('execute: with #current snapshots ' + newSnapshots.size());
+                index = parseSection(snapshotContent,index,newSnapshots);
             }
             System.debug('execute: all sections processed generating #snapshots ' + newSnapshots.size());
 
@@ -308,119 +311,139 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
             System.debug('execute: END SYS_OrgStorageSnapshot_QUE');
         }
 
-        // Private utility methods
-        private Integer parseNextSection(final String snapshotContent,Integer index, List<SYS_OrgStorageSnapshot__c> newSnapshots) {
-            System.debug('parseNextSection: START at index ' + index);
+        /***
+        * @description  Private utility method parsing each section of the Storage Usage
+        *               setup page, extracting data and coverting them into SYS_OrgStorageSnapshot__c
+        *               of proper record types.
+        *               Starts searching for patterns at the provided index in the snapshot 
+        *               and returning the last index processed as start for the next section.
+        ***/
+        private Integer parseSection(final String snapshotContent,Integer index, List<SYS_OrgStorageSnapshot__c> newSnapshots) {
+            System.debug('parseSection: START at index ' + index);
             
             // Determining Section limits
-            Integer sectionStart = snapshotContent.indexOf('<h3>',index);
-            System.debug('parseNextSection: section start found ' + sectionStart);
+            //Integer sectionStart = snapshotContent.indexOf('<h3>',index);
+            Integer sectionStart = snapshotContent.indexOf('bRelatedList',index);
+            System.debug('parseSection: section start found ' + sectionStart);
             if (sectionStart == -1) {
-                System.debug('parseNextSection: END / end of content reached ');
+                System.debug('parseSection: END / end of content reached ');
                 return -1;
             }
 
-            Integer tableStart = snapshotContent.indexOf('<table',sectionStart + 4);
-            System.debug('parseNextSection: table start found ' + tableStart);
+            Integer headerStart = snapshotContent.indexOf('pbHeader',sectionStart + 12);
+            System.debug('parseSection: section header start found ' + headerStart);
 
-            Integer sectionEnd = snapshotContent.indexOf('</table>',tableStart + 6) + 8;
-            System.debug('parseNextSection: section end found ' + sectionEnd);
+            Integer dataStart = snapshotContent.indexOf('pbBody',headerStart + 8);
+            System.debug('parseSection: section data start found ' + dataStart);
+            //Integer tableStart = snapshotContent.indexOf('<table',sectionStart + 4);
+            //System.debug('parseSection: section table start found ' + tableStart);
+
+            Integer sectionEnd = snapshotContent.indexOf('</table>',dataStart + 6) + 8;
+            //Integer sectionEnd = snapshotContent.indexOf('</table>',tableStart + 6) + 8;
+            System.debug('parseSection: section end found ' + sectionEnd);
             index = sectionEnd + 1;
-            System.debug('parseNextSection: index updated ' + index);
+            System.debug('parseSection: index updated ' + index);
 
             // Initializing Snapshot template
             SYS_OrgStorageSnapshot__c snapshotTemplate = new SYS_OrgStorageSnapshot__c(
                 RecordTypeId = RT_ID_Global,
                 Category__c = 'Overall Situation'
             );
-            String sectionHeader = snapshotContent.substring(sectionStart, tableStart);
-            System.debug('parseNextSection: section header determined ' + sectionHeader);
+            String sectionHeader = snapshotContent.substring(headerStart, dataStart);
+            //String sectionHeader = snapshotContent.substring(sectionStart, tableStart);
+            System.debug('parseSection: section header determined ' + sectionHeader);
             Matcher titleMatcher = PATTERN_TITLE.matcher(sectionHeader);
             if (titleMatcher.find()) {
-                System.debug('parseNextSection: updating default title to ' +  titleMatcher.group());
+                System.debug('parseSection: updating default title to ' +  titleMatcher.group());
                 snapshotTemplate.RecordTypeId = RT_ID_Detail;
                 snapshotTemplate.Category__c = titleMatcher.group(1);
             }
-            System.debug('parseNextSection: snapshot template initialized ' + snapshotTemplate);
+            System.debug('parseSection: snapshot template initialized ' + snapshotTemplate);
 
             // Processing Section rows
-            Integer rowIndex = tableStart;
+            Integer rowIndex = dataStart;
+            //Integer rowIndex = tableStart;
             while (rowIndex != -1) {
-                System.debug('parseNextSection: processing next row from index ' + rowIndex);
-                rowIndex = parseNextRow(snapshotContent,rowIndex,sectionEnd,newSnapshots,snapshotTemplate);
+                System.debug('parseSection: processing row from index ' + rowIndex);
+                rowIndex = parseRow(snapshotContent,rowIndex,sectionEnd,newSnapshots,snapshotTemplate);
             }
-            System.debug('parseNextSection: END / all rows processed with now #snapshots ' + newSnapshots.size());
+            System.debug('parseSection: END / all rows processed with now #snapshots ' + newSnapshots.size());
             return index;
         }
 
-        private Integer parseNextRow(final String snapshotContent,Integer rowIndex, final Integer maxIndex,
+        /***
+        * @description  Private utility method parsing each row in a data table of the Storage Usage
+        *               setup page, extracting data and coverting them into SYS_OrgStorageSnapshot__c
+        *               based on the provided template.
+        ***/
+        private Integer parseRow(final String snapshotContent,Integer rowIndex, final Integer maxIndex,
                                     List<SYS_OrgStorageSnapshot__c> newSnapshots, final SYS_OrgStorageSnapshot__c snapshotTemplate) {
-            System.debug('parseNextRow: START at index ' + rowIndex);
+            System.debug('parseRow: START at index ' + rowIndex);
 
             // Determining Row limits
             Integer rowStart = snapshotContent.indexOf('<tr',rowIndex);
-            System.debug('parseNextRow: row start found ' + rowStart);
+            System.debug('parseRow: row start found ' + rowStart);
             if (rowStart == -1) {
-                System.debug('parseNextRow: END / end of content reached ');
+                System.debug('parseRow: END / end of content reached ');
                 return -1;
             }
             else if (rowStart > maxIndex) {
-                System.debug('parseNextRow: END / end of section reached ');
+                System.debug('parseRow: END / end of section reached ');
                 return -1;
             }
 
             Integer rowEnd = snapshotContent.indexOf('</tr>',rowStart + 3) + 5;
-            System.debug('parseNextRow: row end found ' + rowEnd);
+            System.debug('parseRow: row end found ' + rowEnd);
             rowIndex = rowEnd + 1;
-            System.debug('parseNextRow: rowIndex updated ' + rowIndex);
+            System.debug('parseRow: rowIndex updated ' + rowIndex);
 
             String rowString = snapshotContent.substring(rowStart, rowEnd);
-            System.debug('parseNextRow: row data determined ' + rowString);
+            System.debug('parseRow: row data determined ' + rowString);
 
             Matcher lineMatcher = PATTERN_DATA.matcher(rowString);
             if (lineMatcher.find()) {
-                System.debug('parseNextRow: line match 1 ' + lineMatcher.group(1));
-                System.debug('parseNextRow: line match 2 ' + lineMatcher.group(2));
-                System.debug('parseNextRow: line match 3 ' + lineMatcher.group(3));
-                System.debug('parseNextRow: line match 4 ' + lineMatcher.group(4));
-                System.debug('parseNextRow: line match 5 ' + lineMatcher.group(5));
+                System.debug('parseRow: line match 1 ' + lineMatcher.group(1));
+                System.debug('parseRow: line match 2 ' + lineMatcher.group(2));
+                System.debug('parseRow: line match 3 ' + lineMatcher.group(3));
+                System.debug('parseRow: line match 4 ' + lineMatcher.group(4));
+                System.debug('parseRow: line match 5 ' + lineMatcher.group(5));
 
                 SYS_OrgStorageSnapshot__c newSnap = snapshotTemplate.clone(false, false, false, false);
                 if (snapshotTemplate.recordTypeId == RT_ID_Global) {
-                    System.debug('parseNextRow: adding global snapshot --> ' + lineMatcher.group(1) + ' : ' + lineMatcher.group(3) + ' / ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
+                    System.debug('parseRow: adding global snapshot --> ' + lineMatcher.group(1) + ' : ' + lineMatcher.group(3) + ' / ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
                     newSnap.Name = lineMatcher.group(1);
                     newSnap.Limit__c = extractLong(lineMatcher.group(3));
                     newSnap.Used__c = extractLong(lineMatcher.group(4));
                     newSnap.Ratio__c = extractRatio(lineMatcher.group(5));
                 }
                 else {
-                    System.debug('parseNextRow: reanalysing for detail snapshot');
+                    System.debug('parseRow: reanalysing for detail snapshot');
                     if (String.isBlank(lineMatcher.group(1))) {
-                        System.debug('parseNextRow: reanalysing detail data snapshot line');
+                        System.debug('parseRow: reanalysing detail data snapshot line');
                         Matcher labelMatcher = PATTERN_LABEL.matcher(rowString);
                         if (labelMatcher.find()) {
-                            System.debug('parseNextRow: adding detail data snapshot --> ' + labelMatcher.group(1) + ' : ' + lineMatcher.group(3) + ' / ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
+                            System.debug('parseRow: adding detail data snapshot --> ' + labelMatcher.group(1) + ' : ' + lineMatcher.group(3) + ' / ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
                             newSnap.Name = labelMatcher.group(1);
                             newSnap.Count__c = extractLong(lineMatcher.group(3));
                             newSnap.Storage__c = extractLong(lineMatcher.group(4));
                             newSnap.Ratio__c = extractRatio(lineMatcher.group(5));
                         }
                         else {
-                            System.debug('parseNextRow: reanalysing detail user snapshot line');
+                            System.debug('parseRow: reanalysing detail user snapshot line');
                             Matcher labelMatcher2 = PATTERN_LABEL2.matcher(rowString);
                             if (labelMatcher2.find()){
-                                System.debug('parseNextRow: adding detail user snapshot --> ' + labelMatcher2.group(1) + ' : ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
+                                System.debug('parseRow: adding detail user snapshot --> ' + labelMatcher2.group(1) + ' : ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
                                 newSnap.Name = labelMatcher2.group(1);
                                 newSnap.Storage__c = extractLong(lineMatcher.group(4));
                                 newSnap.Ratio__c = extractRatio(lineMatcher.group(5));        
                             }
                             else {
-                                System.debug('parseNextRow: ignoring line (no label found) ' + rowString);
+                                System.debug('parseRow: ignoring line (no label found) ' + rowString);
                             }                  
                         }
                     }
                     else {
-                        System.debug('parseNextRow: adding detail tech user snapshot --> ' + lineMatcher.group(1) + ' : ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
+                        System.debug('parseRow: adding detail tech user snapshot --> ' + lineMatcher.group(1) + ' : ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
                         newSnap.Name = lineMatcher.group(1);
                         newSnap.Storage__c = extractLong(lineMatcher.group(4));
                         newSnap.Ratio__c = extractRatio(lineMatcher.group(5));
@@ -428,10 +451,10 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
                 }
 
                 newSnapshots.add(newSnap);
-                System.debug('parseNextRow: END / new Snapshot registered ' + newSnap);
+                System.debug('parseRow: END / new Snapshot registered ' + newSnap);
             }
             else {
-                System.debug('parseNextRow: END KO / no data match');
+                System.debug('parseRow: END KO / no data match');
             }
             return rowIndex;
         }
