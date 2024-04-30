@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentAsset xmlns="http://soap.sforce.com/2006/04/metadata">
+    <isVisibleByExternalUsers>false</isVisibleByExternalUsers>
+    <language>en_US</language>
+    <masterLabel>SYS_Logo</masterLabel>
+    <relationships>
+        <insightsApplication>
+            <access>VIEWER</access>
+            <name>SYS_Monitoring</name>
+        </insightsApplication>
+        <organization>
+            <access>VIEWER</access>
+        </organization>
+    </relationships>
+    <versions>
+        <version>
+            <number>2</number>
+            <pathOnClient>SYS_Logo.png</pathOnClient>
+        </version>
+    </versions>
+</ContentAsset>

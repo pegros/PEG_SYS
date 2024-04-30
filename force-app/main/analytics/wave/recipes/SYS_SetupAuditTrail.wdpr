@@ -96,10 +96,9 @@
         "dataset" : {
           "type" : "analyticsDataset",
           "label" : "SYS SetupAuditTrail",
-          "name" : "SYS_SeyupAuditTrail",
+          "name" : "SYS_SetupAuditTrail",
           "folderName" : "SYS_Monitoring"
-        },
-        "measuresToCurrencies" : [ ]
+        }
       }
     },
     "FORMULA0" : {
@@ -207,7 +206,7 @@
         }
       },
       "OUTPUT0" : {
-        "label" : "AuditTrail",
+        "label" : "SYS SetupAuditTrail",
         "description" : "",
         "type" : "OUTPUT",
         "top" : 112,

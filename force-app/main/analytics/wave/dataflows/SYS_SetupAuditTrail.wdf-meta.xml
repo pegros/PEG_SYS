@@ -3,6 +3,6 @@
     <content xsi:nil="true"/>
     <application>WAVE_PUBLIC_DATAFLOWS</application>
     <dataflowType>RecipeV3</dataflowType>
-    <description>Recipe SYS SetupAuditTrail_recipe</description>
-    <masterLabel>SYS SetupAuditTrail_recipe</masterLabel>
+    <description>Recipe SYS SetupAuditTrail Synch_recipe</description>
+    <masterLabel>SYS SetupAuditTrail Synch_recipe</masterLabel>
 </WaveDataflow>

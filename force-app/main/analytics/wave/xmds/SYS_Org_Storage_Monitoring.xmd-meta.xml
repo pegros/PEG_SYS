@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WaveXmd xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <dataset xsi:nil="true"/>
+    <measures>
+        <field>UserDataDetails_1.Ratio__c</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <sortIndex>0</sortIndex>
+    </measures>
+    <measures>
+        <field>FileDetails_1.Ratio__c</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <sortIndex>1</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_1.A</field>
+        <isDerived>false</isDerived>
+        <label>#Measures</label>
+        <sortIndex>2</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_1.B</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Min. Ratio</label>
+        <sortIndex>3</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_1.E</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Median Ratio</label>
+        <sortIndex>4</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_1.D</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Avg Ratio</label>
+        <sortIndex>5</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_1.C</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Max. Ratio</label>
+        <sortIndex>6</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_1.F</field>
+        <isDerived>false</isDerived>
+        <label>Min. Used</label>
+        <sortIndex>7</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_1.G</field>
+        <isDerived>false</isDerived>
+        <label>Max. Used</label>
+        <sortIndex>8</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_1.H</field>
+        <isDerived>false</isDerived>
+        <label>Min. Limit</label>
+        <sortIndex>9</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_1.I</field>
+        <isDerived>false</isDerived>
+        <label>Max. Limit</label>
+        <sortIndex>10</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalDetails_1.Ratio__c</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <sortIndex>11</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalDetails_2.Ratio__c</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <sortIndex>12</sortIndex>
+    </measures>
+    <measures>
+        <field>DataDetails_1.Ratio__c</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <sortIndex>13</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_2.I</field>
+        <isDerived>false</isDerived>
+        <label>Max. Storage</label>
+        <sortIndex>14</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_2.H</field>
+        <isDerived>false</isDerived>
+        <label>Min. Storage</label>
+        <sortIndex>15</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_2.G</field>
+        <isDerived>false</isDerived>
+        <label>Max. Count</label>
+        <sortIndex>16</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_2.F</field>
+        <isDerived>false</isDerived>
+        <label>Min. Count</label>
+        <sortIndex>17</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_2.C</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Max. Ratio</label>
+        <sortIndex>18</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_2.D</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Avg Ratio</label>
+        <sortIndex>19</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_2.E</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Median Ratio</label>
+        <sortIndex>20</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_2.B</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Min. Ratio</label>
+        <sortIndex>21</sortIndex>
+    </measures>
+    <measures>
+        <field>GlobalSynthesis_2.A</field>
+        <isDerived>false</isDerived>
+        <label>#Measurements</label>
+        <sortIndex>22</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_1.I</field>
+        <isDerived>false</isDerived>
+        <label>Max. Storage</label>
+        <sortIndex>23</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_1.H</field>
+        <isDerived>false</isDerived>
+        <label>Min. Storage</label>
+        <sortIndex>24</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_1.G</field>
+        <isDerived>false</isDerived>
+        <label>Max. Count</label>
+        <sortIndex>25</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_1.F</field>
+        <isDerived>false</isDerived>
+        <label>Min. Count</label>
+        <sortIndex>26</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_1.C</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Max. Ratio</label>
+        <sortIndex>27</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_1.D</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Avg Ratio</label>
+        <sortIndex>28</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_1.E</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Median Ratio</label>
+        <sortIndex>29</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_1.B</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Min. Ratio</label>
+        <sortIndex>30</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_1.A</field>
+        <isDerived>false</isDerived>
+        <label>#Measurements</label>
+        <sortIndex>31</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_2.I</field>
+        <isDerived>false</isDerived>
+        <label>Max. Storage</label>
+        <sortIndex>32</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_2.H</field>
+        <isDerived>false</isDerived>
+        <label>Min. Storage</label>
+        <sortIndex>33</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_2.C</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Max. Ratio</label>
+        <sortIndex>34</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_2.D</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Avg Ratio</label>
+        <sortIndex>35</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_2.E</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Median Ratio</label>
+        <sortIndex>36</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_2.B</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Min. Ratio</label>
+        <sortIndex>37</sortIndex>
+    </measures>
+    <measures>
+        <field>DataSynthesis_2.A</field>
+        <isDerived>false</isDerived>
+        <label>#Measurements</label>
+        <sortIndex>38</sortIndex>
+    </measures>
+    <measures>
+        <field>UserDataSynthesis_1.I</field>
+        <isDerived>false</isDerived>
+        <label>Max. Storage</label>
+        <sortIndex>39</sortIndex>
+    </measures>
+    <measures>
+        <field>UserDataSynthesis_1.H</field>
+        <isDerived>false</isDerived>
+        <label>Min. Storage</label>
+        <sortIndex>40</sortIndex>
+    </measures>
+    <measures>
+        <field>UserDataSynthesis_1.C</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Max. Ratio</label>
+        <sortIndex>41</sortIndex>
+    </measures>
+    <measures>
+        <field>UserDataSynthesis_1.D</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Avg Ratio</label>
+        <sortIndex>42</sortIndex>
+    </measures>
+    <measures>
+        <field>UserDataSynthesis_1.E</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Median Ratio</label>
+        <sortIndex>43</sortIndex>
+    </measures>
+    <measures>
+        <field>UserDataSynthesis_1.B</field>
+        <formatCustomFormat>[&quot;### %&quot;,1]</formatCustomFormat>
+        <isDerived>false</isDerived>
+        <label>Min. Ratio</label>
+        <sortIndex>44</sortIndex>
+    </measures>
+    <measures>
+        <field>UserDataSynthesis_1.A</field>
+        <isDerived>false</isDerived>
+        <label>#Measurements</label>
+        <sortIndex>45</sortIndex>
+    </measures>
+    <type>Asset</type>
+    <waveVisualization>SYS_Org_Storage_Monitoring</waveVisualization>
+</WaveXmd>
