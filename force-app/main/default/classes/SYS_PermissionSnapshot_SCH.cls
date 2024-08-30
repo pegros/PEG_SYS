@@ -32,6 +32,10 @@
 
 public without sharing class SYS_PermissionSnapshot_SCH  implements Schedulable {
 
+    //#################################################################
+    // Static Constants
+    //#################################################################
+
     /***
     * @description Name Prefix of Permission Fields on the the PermissionSet standard Object.
     ***/
@@ -52,7 +56,11 @@ public without sharing class SYS_PermissionSnapshot_SCH  implements Schedulable 
     ***/
     static final private Set<String> IGNORED_PERMISSIONS = new Set<String>{
         'PermissionsInstallMultiforce','PermissionsPublishMultiforce','PermissionsCreateMultiforce'};
-    
+
+
+    //#################################################################
+    // Main Execution
+    //#################################################################
 
     /***
     * @description  Entry method for schedulable trigger.
@@ -74,6 +82,11 @@ public without sharing class SYS_PermissionSnapshot_SCH  implements Schedulable 
         System.debug('execute: END SYS_PermissionSnapshot_SCH / queueable enqueued');
     }
 
+
+    //#################################################################
+    // Utilities
+    //#################################################################
+
     /***
     * @description  Utility method to extract the list of all boolean permission fields
     *               defined on the Org for the standard Permission object.
@@ -92,14 +105,16 @@ public without sharing class SYS_PermissionSnapshot_SCH  implements Schedulable 
                 if (IGNORED_PERMISSIONS.contains(iterName)) {
                     system.debug(LoggingLevel.FINER,'initPermissionFields: bypassing ' + iterName);   
                 }
-                else {
-                    system.debug(LoggingLevel.FINE,'initPermissionFields: registering ' + iterName);   
-                    system.debug(LoggingLevel.FINEST,'initPermissionFields: of type ' + iter.getDescribe().getType());   
+                else if (iter.getDescribe().getType() == Schema.DisplayType.BOOLEAN) {
+                    system.debug(LoggingLevel.FINE,'initPermissionFields: registering BOOLEAN ' + iterName);   
                     fieldList.add(iterName);
+                }
+                else {
+                    system.debug(LoggingLevel.FINER,'initPermissionFields: excluding ' + iter.getDescribe().getType() + ' ' + iterName);   
                 }
             } 
             else {
-                system.debug(LoggingLevel.FINEST,'initPermissionFields: ignoring ' + iterName);   
+                system.debug(LoggingLevel.FINEST,'initPermissionFields: ignoring ' + iter.getDescribe().getType() + ' ' + iterName);   
             }
         }
 
@@ -107,6 +122,10 @@ public without sharing class SYS_PermissionSnapshot_SCH  implements Schedulable 
         return fieldList;
     }
 
+
+    //#################################################################
+    // Queueable Sub-Class
+    //#################################################################
 
     /***
     * @description  Queueable Subclass to handle cases to initialize/review snapshots
@@ -123,12 +142,21 @@ public without sharing class SYS_PermissionSnapshot_SCH  implements Schedulable 
 
     public class SYS_PermissionSnapshot_QUE implements Queueable {
 
+        //#################################################################
+        // Instance Variables
+        //#################################################################
+
         /***
         * @description Queueable Operation context parameters
         ***/
         private List<String>    permFieldList;
         private DateTime        processStartTS;
         private ID              lastPSetID;
+
+
+        //#################################################################
+        // Initialization
+        //#################################################################
 
         /***
         * @description  Constructor for Queueable process init
@@ -156,6 +184,11 @@ public without sharing class SYS_PermissionSnapshot_SCH  implements Schedulable 
             System.debug('constructor: lastPSetID provided ' + lastPSetID);
             System.debug('constructor: END SYS_PermissionSnapshot_QUE (requeue)');
         }
+
+
+        //#################################################################
+        // Main Execution
+        //#################################################################
 
         /***
         * @description  Main Queueable Execution logic : upsert is processed in priority
@@ -185,6 +218,10 @@ public without sharing class SYS_PermissionSnapshot_SCH  implements Schedulable 
                 System.debug('execute: END SYS_PermissionSnapshot_QUE / no requeue');
             }
         }
+
+        //#################################################################
+        // Utilities
+        //#################################################################
 
         /***
         * @description  Private Utility method to process PermissionSnapshot__c upsert logic.
@@ -220,27 +257,32 @@ public without sharing class SYS_PermissionSnapshot_SCH  implements Schedulable 
 
             List<SYS_PermissionSnapshot__c> newPsetSnapshots = new List<SYS_PermissionSnapshot__c>();
             for (PermissionSet iter : pset2analyse) {
-                system.debug(LoggingLevel.FINE,'doUpsertPermissions: processing PermissionSet ' + iter.Name);
+                system.debug(LoggingLevel.FINE,'doUpsertPermissions: registering fields for PermissionSet ' + iter.Name);
 
                 for (String iterField : this.permFieldList) {
-                    if ((Boolean)(iter.get(iterField))) {
-                        system.debug(LoggingLevel.FINE,'doUpsertPermissions: registering field ' + iterField);
-                        newPsetSnapshots.add(new SYS_PermissionSnapshot__c(
-                            Name = iterField,
-                            PermissionSetId__c = iter.Id,
-                            PermissionSet__c = iter.Name,
-                            ProfileId__c = iter.ProfileId,
-                            Profile__c = iter.Profile.Name,
-                            PermissionSetGroupId__c = iter.PermissionSetGroupId,
-                            PermissionSetGroup__c = iter.PermissionSetGroup.DeveloperName,
-                            UniqueId__c =  iter.Id + '-' + iterField
-                        ));
+                    if (iter.isSet(iterField)) {
+                        if ((iter.get(iterField)).equals(true)) {
+                            system.debug(LoggingLevel.FINE,'doUpsertPermissions: registering field ' + iterField);
+                            newPsetSnapshots.add(new SYS_PermissionSnapshot__c(
+                                Name = iterField,
+                                PermissionSetId__c = iter.Id,
+                                PermissionSet__c = iter.Name,
+                                ProfileId__c = iter.ProfileId,
+                                Profile__c = iter.Profile.Name,
+                                PermissionSetGroupId__c = iter.PermissionSetGroupId,
+                                PermissionSetGroup__c = iter.PermissionSetGroup.DeveloperName,
+                                UniqueId__c =  iter.Id + '-' + iterField
+                            ));
+                        }
+                        else {
+                            system.debug(LoggingLevel.FINEST,'doUpsertPermissions: ignoring field ' + iterField + ' with value ' + iter.get(iterField));
+                        }
                     }
                     else {
-                        system.debug(LoggingLevel.FINEST,'doUpsertPermissions: ignoring field ' + iterField);
+                        system.debug(LoggingLevel.WARN,'doUpsertPermissions: field ' + iterField + ' not provided');
                     }
-                    this.lastPSetID = iter.Id;
                 }
+                this.lastPSetID = iter.Id;
             }
             system.debug('doUpsertPermissions: #PsetSnapshots extracted ' + newPsetSnapshots.size());
             system.debug('doUpsertPermissions: last Pset ID updated ' + this.lastPSetID);

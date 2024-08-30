@@ -78,7 +78,7 @@ public without sharing class SYS_ObjectSnapshot_SCH  implements Schedulable {
                     when else   { iterType = 'Unknown';}
                 }
             }
-            else if (iterType == 'Standard Object') {
+            else if (iterType.equals('Standard Object')) {
                 switch on iterName.substringAfterLast('_') {
                     when 'ChangeEvent'  { iterType = 'CDC Event';}
                     when 'Share'        { iterType = 'Sharing';}
