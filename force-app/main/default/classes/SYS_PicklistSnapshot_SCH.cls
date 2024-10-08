@@ -214,7 +214,7 @@ public without sharing class SYS_PicklistSnapshot_SCH  implements Schedulable {
                     system.debug(LoggingLevel.FINE,'upsertPicklists: processing picklist value ' + iterValue);
                     newSnapshots.add(new SYS_PicklistSnapshot__c(
                         Name        = (iterName + '.' + iterValue.getValue()).left(80),
-                        UniqueID__c = iterName + '.' + iterValue.getValue(),
+                        UniqueID__c = (iterName + '.' + iterValue.getValue()).replace(' ','').replace('\'','').replace('’',''),
                         Picklist__c = iterName,
                         Object__c   = nameParts[0],
                         Field__c    = nameParts[1],
@@ -223,6 +223,7 @@ public without sharing class SYS_PicklistSnapshot_SCH  implements Schedulable {
                         IsActive__c = iterValue.isActive(),
                         IsDefault__c = iterValue.isDefaultValue()
                     ));
+                    system.debug(LoggingLevel.FINE,'upsertPicklists: new value added with Unique ID ' + (iterName + '.' + iterValue.getValue()).replace(' ','').replace('\'','').replace('’',''));
                 }
                 System.debug('upsertPicklists: newPicklists updated to #items ' + newSnapshots.size());
 
