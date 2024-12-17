@@ -33,12 +33,14 @@
 public without sharing class SYS_ObjectSnapshot_SCH  implements Schedulable {
 
     /***
-    * @description SObject partially processed because of technical accessibility issue
+    * @description  SObject partially processed because of technical accessibility issue
+    *               Accessing their description triggers internal Salesforce errors
+    *               with no ability to catch any Apex exception.
     ***/
     static final private Set<String> SPECIAL_OBJECTS = new Set<String>{
         'SalesforceContract','SalesforceContractFeed',
         'SalesforceInvoice','SalesforceInvoiceFeed',
-        'SalesforceQuote','SalesforceQuoteFeed'};
+        'SalesforceQuote','SalesforceQuoteFeed','TenantBillingUsageEvent'};
     
 
     /***
@@ -60,9 +62,17 @@ public without sharing class SYS_ObjectSnapshot_SCH  implements Schedulable {
         List<SYS_ObjectSnapshot__c> snapshotList = new List<SYS_ObjectSnapshot__c>();
 
         for(Schema.SObjectType iter : Schema.getGlobalDescribe().Values()){
-            Schema.DescribeSObjectResult iterDesc = iter.getDescribe();
-            String iterName = iterDesc.getName();
-            System.debug(LoggingLevel.FINE,'execute: processing object ' + iterName);
+            Schema.DescribeSObjectResult iterDesc;
+            String iterName;
+            try {
+                iterDesc = iter.getDescribe();
+                iterName = iterDesc.getName();
+                System.debug(LoggingLevel.FINE,'execute: processing object ' + iterName);
+            }
+            catch(Exception error) {
+                System.debug(LoggingLevel.ERROR,'execute: cannot fetch object desc for ' + iter);
+                continue;
+            }
 
             String iterType = (iterDesc.isCustomSetting() ? 'Custom Setting' :
                                 (iterDesc.isCustom() ? 
@@ -94,8 +104,10 @@ public without sharing class SYS_ObjectSnapshot_SCH  implements Schedulable {
             }
             System.debug(LoggingLevel.FINER,'execute: object type determined ' + iterType);
 
+            // Section handling special cases where calling iterDesc methods triggers internal 
+            // Salesforce errors not even catched in Apex. 
             if (SPECIAL_OBJECTS.contains(iterName)) {
-                system.debug(LoggingLevel.FINER,'execute: Processing special Object ' + iterName);
+                system.debug(LoggingLevel.FINER,'execute: registering special Object ' + iterName);
                 snapshotList.add(new SYS_ObjectSnapshot__c(
                     Name = iterName,
                     UniqueID__c = iterName,
