@@ -62,17 +62,9 @@ public without sharing class SYS_ObjectSnapshot_SCH  implements Schedulable {
         List<SYS_ObjectSnapshot__c> snapshotList = new List<SYS_ObjectSnapshot__c>();
 
         for(Schema.SObjectType iter : Schema.getGlobalDescribe().Values()){
-            Schema.DescribeSObjectResult iterDesc;
-            String iterName;
-            try {
-                iterDesc = iter.getDescribe();
-                iterName = iterDesc.getName();
-                System.debug(LoggingLevel.FINE,'execute: processing object ' + iterName);
-            }
-            catch(Exception error) {
-                System.debug(LoggingLevel.ERROR,'execute: cannot fetch object desc for ' + iter);
-                continue;
-            }
+            Schema.DescribeSObjectResult iterDesc = iter.getDescribe();
+            String iterName = iterDesc.getName();
+            System.debug(LoggingLevel.FINE,'execute: processing object ' + iterName);
 
             String iterType = (iterDesc.isCustomSetting() ? 'Custom Setting' :
                                 (iterDesc.isCustom() ? 
