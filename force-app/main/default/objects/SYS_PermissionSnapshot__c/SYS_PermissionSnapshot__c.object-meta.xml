@@ -154,7 +154,6 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
-    <gender>Masculine</gender>
     <label>SYS Permission Snapshot</label>
     <nameField>
         <label>Permission Name</label>
