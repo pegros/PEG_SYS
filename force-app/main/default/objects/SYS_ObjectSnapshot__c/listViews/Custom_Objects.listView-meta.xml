@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Custom_Objects</fullName>
+    <columns>NAME</columns>
+    <columns>Label__c</columns>
+    <columns>rtCount__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>LAST_UPDATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Type__c</field>
+        <operation>equals</operation>
+        <value>Custom Object</value>
+    </filters>
+    <label>Custom Objects</label>
+</ListView>

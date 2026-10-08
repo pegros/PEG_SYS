@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>User_Licenses</fullName>
+    <columns>CREATED_DATE</columns>
+    <columns>NAME</columns>
+    <columns>UsedLicenses__c</columns>
+    <columns>TotalLicenses__c</columns>
+    <columns>Ratio__c</columns>
+    <columns>Status__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>SYS_OrgLicenseSnapshot__c.UserLicense</value>
+    </filters>
+    <label>User Licenses</label>
+</ListView>

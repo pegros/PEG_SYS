@@ -162,6 +162,7 @@
     <pluralLabel>SYS OrgStorage Snapshots</pluralLabel>
     <searchLayouts>
         <searchResultsAdditionalFields>RECORDTYPE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Category__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Used__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Limit__c</searchResultsAdditionalFields>
