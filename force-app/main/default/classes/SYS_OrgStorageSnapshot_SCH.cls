@@ -58,6 +58,12 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
     static final private Pattern PATTERN_LABEL2     = Pattern.compile('<a.*>(.*)<\\/a>');
 
     /***
+    * @description  User locale number separators (to parse numbers)
+    ***/
+    static final private String SEPARATOR_DECIMAL = (0.5).format().replaceAll('[0-9]', '');
+    static final private String SEPARATOR_THOUSAND = (1000).format().replaceAll('[0-9]', '');
+
+    /***
     * @description  Record Type IDs for snapshot records
     ***/
     static private final String RT_ID_Global = Schema.SObjectType.SYS_OrgStorageSnapshot__c.getRecordTypeInfosByDeveloperName().get('Global').getRecordTypeId();
@@ -89,165 +95,6 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
     *               indeed represents an implicit callout. 
     ***/
     public class SYS_OrgStorageSnapshot_QUE implements Queueable, Database.AllowsCallouts {
-    
-        /*public SYS_OrgStorageSnapshot_QUE() {
-        }*/
-    
-        // OLD VERSION NOT SCALABLE ENOUGH
-        /*
-        public void execute(QueueableContext context) {
-            System.debug('execute: START SYS_OrgStorageSnapshot_QUE');
-
-            PageReference pageRef = new PageReference(
-                '/setup/org/orgstorageusage.jsp?id='
-                + UserInfo.getOrganizationId()
-                + '&setupid=CompanyResourceDisk&appLayout=setup&tour=&isdtp=p1');
-            String snapshotContent;
-            if (Test.isRunningTest()) {
-                snapshotContent = TEST_PAGE_CONTENT;
-                System.debug('execute: default test snapshot Content used ' + snapshotContent?.length());
-            }
-            else {
-                snapshotContent = (PageRef.getContent()).toString();
-                System.debug('execute: snapshot Content fetched with length ' + snapshotContent.length());
-            }
-
-            List<SYS_OrgStorageSnapshot__c> newSnapshots = new List<SYS_OrgStorageSnapshot__c>();
-            Matcher sectionMatcher = PATTERN_SECTION.matcher(snapshotContent);
-
-            try {
-                while (sectionMatcher.find()) {
-                    String sectionString = (sectionMatcher.group(1)); 
-                    System.debug('execute: section matched ' + sectionString);
-                    System.debug('execute: processing section');
-
-                    Matcher titleMatcher = PATTERN_TITLE.matcher(sectionString);
-                    String sectionTitle =  'Overall Situation';
-                    Boolean isGlobalSituation = true;
-                    if (titleMatcher.find()) {
-                        System.debug('execute: title matched');
-                        System.debug('execute: title match value ' +  titleMatcher.group());
-                        sectionTitle = titleMatcher.group(1);
-                        isGlobalSituation = false;
-                    }
-                    System.debug('execute: section title initialized ' + sectionTitle);
-
-                    Matcher rowMatcher = PATTERN_ROW.matcher(sectionString);
-                    while (rowMatcher.find()) {
-                        String matchString = (rowMatcher.group()); //.replace('&nbsp;',' ');
-                        System.debug('execute: processing match string --> ' + matchString);
-                        Matcher lineMatcher = PATTERN_DATA.matcher(matchString);
-                        if (lineMatcher.find()) {
-                            //System.debug('execute: th --> ' + lineMatcher.group(1));
-                            System.debug('execute: line match 1 ' + lineMatcher.group(1));
-                            System.debug('execute: line match 2 ' + lineMatcher.group(2));
-                            System.debug('execute: line match 3 ' + lineMatcher.group(3));
-                            System.debug('execute: line match 4 ' + lineMatcher.group(4));
-                            System.debug('execute: line match 5 ' + lineMatcher.group(5));
-
-                            if (isGlobalSituation) {
-                                System.debug('execute: adding global snapshot --> ' + lineMatcher.group(1) + ' : ' + lineMatcher.group(3) + ' / ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
-                                newSnapshots.add(new SYS_OrgStorageSnapshot__c(
-                                    RecordTypeId = RT_ID_Global,
-                                    Name = lineMatcher.group(1),
-                                    Category__c = sectionTitle,
-                                    Limit__c =  extractLong(lineMatcher.group(3)),
-                                    Used__c = extractLong(lineMatcher.group(4)),
-                                    Ratio__c = extractRatio(lineMatcher.group(5))
-                                ));
-                            }
-                            else {
-                                System.debug('execute: reanalysing for detail snapshot');
-                                if (String.isBlank(lineMatcher.group(1))) {
-                                    System.debug('execute: reanalysing detail data snapshot line');
-                                    Matcher labelMatcher = PATTERN_LABEL.matcher(matchString);
-                                    if (labelMatcher.find()){
-                                        System.debug('execute: adding detail data snapshot --> ' + labelMatcher.group(1) + ' : ' + lineMatcher.group(3) + ' / ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
-                                        newSnapshots.add(new SYS_OrgStorageSnapshot__c(
-                                            RecordTypeId = RT_ID_Detail,
-                                            Name = labelMatcher.group(1),
-                                            Category__c = sectionTitle,
-                                            //Type__c = (fileDetails.contains(labelMatcher.group(1)) ? TYPE_FILE : (bigObjectDetails.contains(labelMatcher.group(1)) ? TYPE_BIG_OBJECT : TYPE_DATA)),
-                                            Count__c = extractLong(lineMatcher.group(3)),
-                                            Storage__c = extractLong(lineMatcher.group(4)),
-                                            Ratio__c = extractRatio(lineMatcher.group(5))
-                                        ));
-                                    }
-                                    else {
-                                        System.debug('execute: reanalysing detail user snapshot line');
-                                        Matcher labelMatcher2 = PATTERN_LABEL2.matcher(matchString);
-                                        if (labelMatcher2.find()){
-                                            System.debug('execute: adding detail user snapshot --> ' + labelMatcher2.group(1) + ' : ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
-                                            newSnapshots.add(new SYS_OrgStorageSnapshot__c(
-                                                RecordTypeId = RT_ID_Detail,
-                                                Name = labelMatcher2.group(1),
-                                                Category__c = sectionTitle,
-                                                //Type__c = (fileDetails.contains(labelMatcher.group(1)) ? TYPE_FILE : (bigObjectDetails.contains(labelMatcher.group(1)) ? TYPE_BIG_OBJECT : TYPE_DATA)),
-                                                //Count__c = extractLong(lineMatcher.group(2)),
-                                                Storage__c = extractLong(lineMatcher.group(4)),
-                                                Ratio__c = extractRatio(lineMatcher.group(5))
-                                            ));
-                                        }
-                                        else {
-                                            System.debug('execute: ignoring line (no label found) ' + matchString);
-                                        }                  
-                                    }
-                                }
-                                else {
-                                    System.debug('execute: adding detail tech user snapshot --> ' + lineMatcher.group(1) + ' : ' + lineMatcher.group(4) + ' / ' + lineMatcher.group(5));
-                                    newSnapshots.add(new SYS_OrgStorageSnapshot__c(
-                                        RecordTypeId = RT_ID_Detail,
-                                        Name = lineMatcher.group(1),
-                                        Category__c = sectionTitle,
-                                        //Type__c = (fileDetails.contains(labelMatcher.group(1)) ? TYPE_FILE : (bigObjectDetails.contains(labelMatcher.group(1)) ? TYPE_BIG_OBJECT : TYPE_DATA)),
-                                        //Count__c = extractLong(lineMatcher.group(2)),
-                                        Storage__c = extractLong(lineMatcher.group(4)),
-                                        Ratio__c = extractRatio(lineMatcher.group(5))
-                                    ));
-                                }
-                            }
-                        }
-                        else {
-                            System.debug('execute: ignoring line (no match) ' + matchString);   
-                        }
-                    }
-                    System.debug('execute: all section rows processed');
-                }
-            }
-            catch (Exception e) {
-                System.debug(LoggingLevel.ERROR,'execute: parsing failure raised / stopping parsing ' + e);   
-            }
-
-            if (newSnapshots.size() > 0) {
-                System.debug('execute: inserting #snapshots ' + newSnapshots.size());
-                insert newSnapshots;
-            }
-            else {
-                System.debug('execute: no snapshots to insert');
-            }
-
-            if ((SETTING.PurgeAfterDays__c != null) &&  (SETTING.PurgeAfterDays__c > 0)) {
-                System.debug('execute: purging old snapshot records');
-
-                Date purgeLimit = System.today().addDays(- ((Integer)(SETTING.PurgeAfterDays__c)));
-                System.debug('execute: purgeLimit set to ' + purgeLimit);
-                List<SYS_OrgStorageSnapshot__c> snapshots2delete =
-                    [select Id from SYS_OrgStorageSnapshot__c where CreatedDate < :purgeLimit];
-                if (snapshots2delete?.size() > 0) {
-                    System.debug('execute: deleting #snapshots ' + snapshots2delete.size());
-                    delete snapshots2delete;
-                }
-                else {
-                    System.debug('execute: no snapshots to purge');
-                }
-            }
-            else {
-                System.debug('execute: no purge configured');
-            }
-
-            System.debug('execute: END SYS_OrgStorageSnapshot_QUE');
-        }
-        */
 
         /***
         * @description  Main public method executing the logic of the queueable sub-process
@@ -461,11 +308,19 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
 
         private Long extractLong(final String valueStr) {
             System.debug(LoggingLevel.FINEST,'extractLong: START with ' + valueStr);
+            System.debug(LoggingLevel.FINEST,'extractLong: decimal separator user locale ' + SEPARATOR_DECIMAL);
+            System.debug(LoggingLevel.FINEST,'extractLong: thousand separator user locale ' + SEPARATOR_THOUSAND);
+
             Double value;
             if (valueStr.contains('&nbsp;')) {
                 List<String> valueParts = valueStr.split('&nbsp;');
+                //System.debug(LoggingLevel.FINEST,'extractLong: valueParts extracted ' + valueParts);
+                //value = Double.valueOf(valueParts[0].replace(',','.').replace(' ','').replace(' ',''));
                 System.debug(LoggingLevel.FINEST,'extractLong: valueParts extracted ' + valueParts);
-                value = Double.valueOf(valueParts[0].replace(',','.').replace(' ','').replace(' ',''));
+                System.debug(LoggingLevel.FINEST,'extractLong: baseline conversion ' + valueParts[0].replace(SEPARATOR_DECIMAL,'.').replace(SEPARATOR_THOUSAND,'').replace(' ','').trim());
+                value = Double.valueOf(valueParts[0].replace(SEPARATOR_THOUSAND,'').replace(SEPARATOR_DECIMAL,'.').replace(' ','').trim());
+                System.debug(LoggingLevel.FINEST,'extractLong: value converted ' + value);
+
                 if (valueParts[1] == 'KB') {
                     System.debug(LoggingLevel.FINEST,'extractLong: managing KB');
                     value = value * 1024;
@@ -484,8 +339,10 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
                 }
             }
             else {
-                System.debug(LoggingLevel.FINEST,'extractLong: baseline conversion ' + valueStr.replace(',','.').replace(' ','').replace(' ','').trim());
-                value = Double.valueOf(valueStr.replace(',','.').replace(' ','').replace(' ','').trim());
+                //System.debug(LoggingLevel.FINEST,'extractLong: baseline conversion ' + valueStr.replace(',','.').replace(' ','').replace(' ','').trim());
+                //value = Double.valueOf(valueStr.replace(',','.').replace(' ','').replace(' ','').trim());
+                System.debug(LoggingLevel.FINEST,'extractLong: baseline conversion ' + valueStr.replace(SEPARATOR_THOUSAND,'').replace(SEPARATOR_DECIMAL,'.').replace(' ','').trim());
+                value = Double.valueOf(valueStr.replace(SEPARATOR_THOUSAND,'').replace(SEPARATOR_DECIMAL,'.').replace(' ','').trim());
             }
             System.debug(LoggingLevel.FINEST,'extractLong: END with ' + value.round());
             return value.round();
@@ -493,19 +350,12 @@ public without sharing class SYS_OrgStorageSnapshot_SCH implements Schedulable {
 
         private Decimal extractRatio(final String valueStr) {
             System.debug(LoggingLevel.FINEST,'extractRatio: START with ' + valueStr);
-            /*String test = valueStr.replace('%','');
-            System.debug('extractRatio: % removed ' + test);
-            test = test.replace(' ','');
-            System.debug('extractRatio: strange space removed ' + test);
-            test = test.replace(',','.');
-            System.debug('extractRatio: comma replaced by . ' + test);
-            test = test.trim();
-            System.debug('extractRatio: trim done ' + test);*/
 
-            Decimal value = Decimal.valueof(valueStr.replace('%','').replace(' ','').replace(',','.').trim());
+            //Decimal value = Decimal.valueof(valueStr.replace('%','').replace(' ','').replace(',','.').trim());
+            System.debug(LoggingLevel.FINEST,'extractRatio: baseline conversion ' + valueStr.replace('%','').replace(SEPARATOR_THOUSAND,'').replace(SEPARATOR_DECIMAL,'.').replace(' ','').trim());
+            Decimal value = Decimal.valueof(valueStr.replace('%','').replace(SEPARATOR_THOUSAND,'').replace(SEPARATOR_DECIMAL,'.').replace(' ','').trim());
             System.debug(LoggingLevel.FINEST,'extractRatio: END with ' + value.round());
             return value;
         }
-
-    } 
+    }
 }
