@@ -3,5 +3,5 @@
     <content xsi:nil="true"/>
     <dataflow>SYS_Org_Permission_Synch</dataflow>
     <format>R3</format>
-    <masterLabel>SYS Org Permission Snapshot Synch</masterLabel>
+    <masterLabel>SYS Org Permission Synch</masterLabel>
 </WaveRecipe>

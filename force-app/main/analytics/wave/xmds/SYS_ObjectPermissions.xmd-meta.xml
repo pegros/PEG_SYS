@@ -5,19 +5,19 @@
         <conditionalFormatting>
             <formattingBins>
                 <bin>CRUD-RU</bin>
-                <formatValue>#670000</formatValue>
+                <formatValue>#E84340</formatValue>
                 <label xsi:nil="true"/>
                 <sortIndex>0</sortIndex>
             </formattingBins>
             <formattingBins>
                 <bin>CRU-R</bin>
-                <formatValue>#B56200</formatValue>
+                <formatValue>#B3B400</formatValue>
                 <label xsi:nil="true"/>
                 <sortIndex>1</sortIndex>
             </formattingBins>
             <formattingBins>
                 <bin>R-R</bin>
-                <formatValue>#FFCD95</formatValue>
+                <formatValue>#FFFF93</formatValue>
                 <label xsi:nil="true"/>
                 <sortIndex>2</sortIndex>
             </formattingBins>
@@ -29,13 +29,13 @@
             </formattingBins>
             <formattingBins>
                 <bin>RU</bin>
-                <formatValue>#CD96FF</formatValue>
+                <formatValue>#95FFFF</formatValue>
                 <label xsi:nil="true"/>
                 <sortIndex>4</sortIndex>
             </formattingBins>
             <formattingBins>
                 <bin>CRU</bin>
-                <formatValue>#CD96FF</formatValue>
+                <formatValue>#38E6E7</formatValue>
                 <label xsi:nil="true"/>
                 <sortIndex>5</sortIndex>
             </formattingBins>
@@ -47,19 +47,19 @@
             </formattingBins>
             <formattingBins>
                 <bin>CRUD</bin>
-                <formatValue>#6300B6</formatValue>
+                <formatValue>#CD96FF</formatValue>
                 <label xsi:nil="true"/>
                 <sortIndex>7</sortIndex>
             </formattingBins>
             <formattingBins>
                 <bin>CR</bin>
-                <formatValue>#00B531</formatValue>
+                <formatValue>#98B1FF</formatValue>
                 <label xsi:nil="true"/>
                 <sortIndex>8</sortIndex>
             </formattingBins>
             <formattingBins>
                 <bin>RU-R</bin>
-                <formatValue>#E8963B</formatValue>
+                <formatValue>#E6E830</formatValue>
                 <label xsi:nil="true"/>
                 <sortIndex>9</sortIndex>
             </formattingBins>
@@ -71,9 +71,57 @@
             </formattingBins>
             <formattingBins>
                 <bin>CRUD-R</bin>
-                <formatValue>#B50E03</formatValue>
+                <formatValue>#FF9897</formatValue>
                 <label xsi:nil="true"/>
                 <sortIndex>11</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>CRD-R</bin>
+                <formatValue>#FF9897</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>12</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>R-FR</bin>
+                <formatValue>#FFCD95</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>13</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>RD</bin>
+                <formatValue>#FFFF93</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>14</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>CR-U</bin>
+                <formatValue>#B3B400</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>15</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>RD-R</bin>
+                <formatValue>#E6E830</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>16</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>null</bin>
+                <formatValue>#E6ECF2</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>17</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>CRUD-FRU</bin>
+                <formatValue>#670000</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>18</sortIndex>
+            </formattingBins>
+            <formattingBins>
+                <bin>CRU-FR</bin>
+                <formatValue>#B50E03</formatValue>
+                <label xsi:nil="true"/>
+                <sortIndex>19</sortIndex>
             </formattingBins>
             <property>chartColor</property>
             <referenceField>CRUD</referenceField>

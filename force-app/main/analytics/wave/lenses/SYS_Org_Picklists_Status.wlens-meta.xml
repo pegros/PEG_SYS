@@ -5,5 +5,5 @@
     <datasets>SYS_OrgPicklist</datasets>
     <dateVersion>1</dateVersion>
     <masterLabel>SYS Org Picklists Status</masterLabel>
-    <visualizationType>comparisontable</visualizationType>
+    <visualizationType>pivottable</visualizationType>
 </WaveLens>

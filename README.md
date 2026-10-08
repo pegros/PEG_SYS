@@ -108,3 +108,6 @@ Apex only package.
 </td>
 </tr>
 </table>
+
+⚠️ Explicit install the `GitHub Salesforce Deploy Tool` app is required from the `Setup/Connected Apps OAuth Usage` tab to let the deployment tool connect to your Org to deploy
+the package metadata.

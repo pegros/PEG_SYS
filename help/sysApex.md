@@ -75,7 +75,7 @@ This object contains the list of all SObjects defined on the platform.
 ![Object List View](/media/Objects.png)
 
 
-## Package Configuration
+## Package Installation / Configuration
 
 ### Access to Snapshot Objects
 

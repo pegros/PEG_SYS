@@ -1,5 +1,5 @@
 {
-  "version" : "59.0",
+  "version" : "67.0",
   "nodes" : {
     "LOAD_DATASET0" : {
       "action" : "load",
@@ -15,12 +15,13 @@
         "sampleDetails" : {
           "type" : "TopN",
           "sortBy" : [ ]
-        }
+        },
+        "preserveCurrencyFields" : [ ]
       }
     },
     "OUTPUT1" : {
       "action" : "save",
-      "sources" : [ "LOAD_DATASET0" ],
+      "sources" : [ "FORMULA0" ],
       "parameters" : {
         "fields" : [ ],
         "dataset" : {
@@ -30,6 +31,21 @@
           "folderName" : "SYS_Monitoring"
         },
         "measuresToCurrencies" : [ ]
+      }
+    },
+    "FORMULA0" : {
+      "action" : "formula",
+      "sources" : [ "LOAD_DATASET0" ],
+      "parameters" : {
+        "expressionType" : "SQL",
+        "fields" : [ {
+          "type" : "TEXT",
+          "name" : "Source",
+          "label" : "Source",
+          "formulaExpression" : "'Local'",
+          "precision" : 25,
+          "defaultValue" : ""
+        } ]
       }
     }
   },
@@ -50,11 +66,30 @@
         "type" : "OUTPUT",
         "top" : 112.1,
         "left" : 392.4
+      },
+      "TRANSFORM0" : {
+        "label" : "Init OS",
+        "description" : "",
+        "type" : "TRANSFORM",
+        "top" : 112,
+        "left" : 252,
+        "graph" : {
+          "FORMULA0" : {
+            "parameters" : {
+              "type" : "BASE_FORMULA_UI"
+            },
+            "label" : "Init OS"
+          }
+        },
+        "connectors" : [ ]
       }
     },
     "connectors" : [ {
-      "source" : "LOAD_DATASET0",
+      "source" : "TRANSFORM0",
       "target" : "OUTPUT1"
+    }, {
+      "source" : "LOAD_DATASET0",
+      "target" : "TRANSFORM0"
     } ],
     "hiddenColumns" : [ ]
   },

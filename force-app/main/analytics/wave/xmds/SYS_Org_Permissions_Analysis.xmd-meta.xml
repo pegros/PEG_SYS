@@ -35,6 +35,12 @@
         <sortIndex>2</sortIndex>
     </dimensions>
     <dimensions>
+        <field>ObjectAccessDetails_1.PermissionsViewAllFields</field>
+        <isDerived>false</isDerived>
+        <label>View All Fields</label>
+        <sortIndex>3</sortIndex>
+    </dimensions>
+    <dimensions>
         <conditionalFormatting>
             <property>chartColor</property>
             <referenceField>SetupEntityType</referenceField>
@@ -43,36 +49,36 @@
         </conditionalFormatting>
         <field>lens_4.ALL</field>
         <isDerived>false</isDerived>
-        <sortIndex>3</sortIndex>
+        <sortIndex>4</sortIndex>
     </dimensions>
     <measures>
-        <field>GlobalSynthesis_1.O</field>
+        <field>GlobalSynthesis_1.A</field>
         <isDerived>false</isDerived>
-        <label>Avg Tab Settings</label>
+        <label>#Items</label>
         <sortIndex>0</sortIndex>
     </measures>
     <measures>
-        <field>GlobalSynthesis_1.I</field>
+        <field>GlobalSynthesis_1.C</field>
         <isDerived>false</isDerived>
-        <label>Avg System #Perms</label>
+        <label>#Objects</label>
         <sortIndex>1</sortIndex>
     </measures>
     <measures>
-        <field>GlobalSynthesis_1.N</field>
+        <field>GlobalSynthesis_1.D</field>
         <isDerived>false</isDerived>
-        <label>#Tabs</label>
+        <label>Avg Object #Perms</label>
         <sortIndex>2</sortIndex>
     </measures>
     <measures>
-        <field>GlobalSynthesis_1.G</field>
+        <field>GlobalSynthesis_1.P</field>
         <isDerived>false</isDerived>
-        <label>#System Rights</label>
+        <label>#Fields</label>
         <sortIndex>3</sortIndex>
     </measures>
     <measures>
-        <field>GlobalSynthesis_1.L</field>
+        <field>GlobalSynthesis_1.F</field>
         <isDerived>false</isDerived>
-        <label>Avg Setup #Perms</label>
+        <label>Avg Field #Perms</label>
         <sortIndex>4</sortIndex>
     </measures>
     <measures>
@@ -82,34 +88,76 @@
         <sortIndex>5</sortIndex>
     </measures>
     <measures>
-        <field>GlobalSynthesis_1.F</field>
+        <field>GlobalSynthesis_1.L</field>
         <isDerived>false</isDerived>
-        <label>Avg Field #Perms</label>
+        <label>Avg Setup #Perms</label>
         <sortIndex>6</sortIndex>
     </measures>
     <measures>
-        <field>GlobalSynthesis_1.P</field>
+        <field>GlobalSynthesis_1.G</field>
         <isDerived>false</isDerived>
-        <label>#Fields</label>
+        <label>#System Rights</label>
         <sortIndex>7</sortIndex>
     </measures>
     <measures>
-        <field>GlobalSynthesis_1.D</field>
+        <field>GlobalSynthesis_1.N</field>
         <isDerived>false</isDerived>
-        <label>Avg Object #Perms</label>
+        <label>#Tabs</label>
         <sortIndex>8</sortIndex>
     </measures>
     <measures>
-        <field>GlobalSynthesis_1.C</field>
+        <field>GlobalSynthesis_1.I</field>
         <isDerived>false</isDerived>
-        <label>#Objects</label>
+        <label>Avg System #Perms</label>
         <sortIndex>9</sortIndex>
     </measures>
     <measures>
-        <field>GlobalSynthesis_1.A</field>
+        <field>GlobalSynthesis_1.O</field>
         <isDerived>false</isDerived>
-        <label>#Items</label>
+        <label>Avg Tab Settings</label>
         <sortIndex>10</sortIndex>
+    </measures>
+    <measures>
+        <field>TopPSetsForObjects_1.B</field>
+        <isDerived>false</isDerived>
+        <label>#Object with Edit</label>
+        <sortIndex>11</sortIndex>
+    </measures>
+    <measures>
+        <field>TopPSetsForObjects_1.A</field>
+        <isDerived>false</isDerived>
+        <label>#Objects</label>
+        <sortIndex>12</sortIndex>
+    </measures>
+    <measures>
+        <field>TopPSetsForFields_1.B</field>
+        <isDerived>false</isDerived>
+        <label>#Fields in Edit</label>
+        <sortIndex>13</sortIndex>
+    </measures>
+    <measures>
+        <field>TopPSetsForFields_1.A</field>
+        <isDerived>false</isDerived>
+        <label>#Fields</label>
+        <sortIndex>14</sortIndex>
+    </measures>
+    <measures>
+        <field>TopPSetForSetup_1.E</field>
+        <isDerived>false</isDerived>
+        <label>#Setup Types</label>
+        <sortIndex>15</sortIndex>
+    </measures>
+    <measures>
+        <field>TopPSetForSetup_1.A</field>
+        <isDerived>false</isDerived>
+        <label>#Setup Permissions</label>
+        <sortIndex>16</sortIndex>
+    </measures>
+    <measures>
+        <field>TopPSetsByTabs_1.A</field>
+        <isDerived>false</isDerived>
+        <label>#Tabs</label>
+        <sortIndex>17</sortIndex>
     </measures>
     <measures>
         <conditionalFormatting>
@@ -120,7 +168,7 @@
         </conditionalFormatting>
         <field>ObjectPSetCRUDMatrix_1.A</field>
         <isDerived>false</isDerived>
-        <sortIndex>11</sortIndex>
+        <sortIndex>18</sortIndex>
     </measures>
     <measures>
         <conditionalFormatting>
@@ -131,138 +179,96 @@
         </conditionalFormatting>
         <field>FieldPermsMatrix_1.A</field>
         <isDerived>false</isDerived>
-        <sortIndex>12</sortIndex>
-    </measures>
-    <measures>
-        <field>ObjectsPerPsets_1.F</field>
-        <isDerived>false</isDerived>
-        <label>#Objects with EditAll</label>
-        <sortIndex>13</sortIndex>
-    </measures>
-    <measures>
-        <field>ObjectsPerPsets_1.E</field>
-        <isDerived>false</isDerived>
-        <label>#Objects with ReadAll</label>
-        <sortIndex>14</sortIndex>
-    </measures>
-    <measures>
-        <field>ObjectsPerPsets_1.D</field>
-        <isDerived>false</isDerived>
-        <label>#Objects with Delete</label>
-        <sortIndex>15</sortIndex>
-    </measures>
-    <measures>
-        <field>ObjectsPerPsets_1.C</field>
-        <isDerived>false</isDerived>
-        <label>#Objects with Create</label>
-        <sortIndex>16</sortIndex>
-    </measures>
-    <measures>
-        <field>ObjectsPerPsets_1.B</field>
-        <isDerived>false</isDerived>
-        <label>#Objects with Edit</label>
-        <sortIndex>17</sortIndex>
-    </measures>
-    <measures>
-        <field>ObjectsPerPsets_1.A</field>
-        <isDerived>false</isDerived>
-        <label>#Objects</label>
-        <sortIndex>18</sortIndex>
-    </measures>
-    <measures>
-        <field>lens_2.I</field>
-        <isDerived>false</isDerived>
-        <label>Avg #Perms/Item</label>
         <sortIndex>19</sortIndex>
-    </measures>
-    <measures>
-        <field>lens_2.A</field>
-        <isDerived>false</isDerived>
-        <label>#Permissions</label>
-        <sortIndex>20</sortIndex>
-    </measures>
-    <measures>
-        <field>lens_2.C</field>
-        <isDerived>false</isDerived>
-        <label>#Edit Perms</label>
-        <sortIndex>21</sortIndex>
-    </measures>
-    <measures>
-        <field>lens_2.G</field>
-        <isDerived>false</isDerived>
-        <label>#Fields</label>
-        <sortIndex>22</sortIndex>
-    </measures>
-    <measures>
-        <field>lens_2.H</field>
-        <isDerived>false</isDerived>
-        <label>#Edit Fields</label>
-        <sortIndex>23</sortIndex>
-    </measures>
-    <measures>
-        <field>lens_2.B</field>
-        <isDerived>false</isDerived>
-        <label>#Items</label>
-        <sortIndex>24</sortIndex>
-    </measures>
-    <measures>
-        <field>lens_2.F</field>
-        <isDerived>false</isDerived>
-        <label>#PSets</label>
-        <sortIndex>25</sortIndex>
-    </measures>
-    <measures>
-        <field>lens_2.E</field>
-        <isDerived>false</isDerived>
-        <label>#PSet Groups</label>
-        <sortIndex>26</sortIndex>
     </measures>
     <measures>
         <field>lens_2.D</field>
         <isDerived>false</isDerived>
         <label>#Profiles</label>
+        <sortIndex>20</sortIndex>
+    </measures>
+    <measures>
+        <field>lens_2.E</field>
+        <isDerived>false</isDerived>
+        <label>#PSet Groups</label>
+        <sortIndex>21</sortIndex>
+    </measures>
+    <measures>
+        <field>lens_2.F</field>
+        <isDerived>false</isDerived>
+        <label>#PSets</label>
+        <sortIndex>22</sortIndex>
+    </measures>
+    <measures>
+        <field>lens_2.B</field>
+        <isDerived>false</isDerived>
+        <label>#Items</label>
+        <sortIndex>23</sortIndex>
+    </measures>
+    <measures>
+        <field>lens_2.H</field>
+        <isDerived>false</isDerived>
+        <label>#Edit Fields</label>
+        <sortIndex>24</sortIndex>
+    </measures>
+    <measures>
+        <field>lens_2.G</field>
+        <isDerived>false</isDerived>
+        <label>#Fields</label>
+        <sortIndex>25</sortIndex>
+    </measures>
+    <measures>
+        <field>lens_2.C</field>
+        <isDerived>false</isDerived>
+        <label>#Edit Perms</label>
+        <sortIndex>26</sortIndex>
+    </measures>
+    <measures>
+        <field>lens_2.A</field>
+        <isDerived>false</isDerived>
+        <label>#Permissions</label>
         <sortIndex>27</sortIndex>
     </measures>
     <measures>
-        <field>SystemPermsByName_1.A</field>
+        <field>lens_2.I</field>
         <isDerived>false</isDerived>
-        <label>Total #Items</label>
+        <label>Avg #Perms/Item</label>
         <sortIndex>28</sortIndex>
     </measures>
     <measures>
-        <field>SystemPermsByName_1.C</field>
+        <field>ObjectsByAccess_1.J</field>
         <isDerived>false</isDerived>
-        <label>#PSets</label>
+        <label>#Items with ViewAllFields</label>
         <sortIndex>29</sortIndex>
     </measures>
     <measures>
-        <field>SystemPermsByName_1.D</field>
+        <field>ObjectsByAccess_1.A</field>
         <isDerived>false</isDerived>
-        <label>#PSet Groups</label>
+        <label>#Profiles</label>
         <sortIndex>30</sortIndex>
     </measures>
     <measures>
-        <field>SystemPermsByName_1.B</field>
+        <field>ObjectsByAccess_1.C</field>
         <isDerived>false</isDerived>
-        <label>#Profiles</label>
+        <label>#PSets</label>
         <sortIndex>31</sortIndex>
     </measures>
     <measures>
-        <field>ObjectsByAccess_1.I</field>
+        <field>ObjectsByAccess_1.H</field>
         <isDerived>false</isDerived>
-        <label>#PSet Groups</label>
+        <label>Total #Items</label>
         <sortIndex>32</sortIndex>
     </measures>
     <measures>
-        <field>ObjectsByAccess_1.D</field>
+        <field>ObjectsByAccess_1.B</field>
         <isDerived>false</isDerived>
-        <label>#Items with EditAll</label>
+        <label>#Items with Edit</label>
         <sortIndex>33</sortIndex>
     </measures>
     <measures>
-        <field>ObjectsByAccess_1.E</field>
+        <field>ObjectsByAccess_1.F</field>
         <isDerived>false</isDerived>
-        <label>#Items with ReadAll</label>
+        <label>#Items with Create</label>
         <sortIndex>34</sortIndex>
     </measures>
     <measures>
@@ -272,82 +278,88 @@
         <sortIndex>35</sortIndex>
     </measures>
     <measures>
-        <field>ObjectsByAccess_1.F</field>
+        <field>ObjectsByAccess_1.E</field>
         <isDerived>false</isDerived>
-        <label>#Items with Create</label>
+        <label>#Items with ReadAll</label>
         <sortIndex>36</sortIndex>
     </measures>
     <measures>
-        <field>ObjectsByAccess_1.B</field>
+        <field>ObjectsByAccess_1.D</field>
         <isDerived>false</isDerived>
-        <label>#Items with Edit</label>
+        <label>#Items with EditAll</label>
         <sortIndex>37</sortIndex>
     </measures>
     <measures>
-        <field>ObjectsByAccess_1.H</field>
+        <field>ObjectsByAccess_1.I</field>
         <isDerived>false</isDerived>
-        <label>Total #Items</label>
+        <label>#PSet Groups</label>
         <sortIndex>38</sortIndex>
     </measures>
     <measures>
-        <field>ObjectsByAccess_1.C</field>
+        <field>ObjectsPerPsets_1.F</field>
         <isDerived>false</isDerived>
-        <label>#PSets</label>
+        <label>#Objects with EditAll</label>
         <sortIndex>39</sortIndex>
     </measures>
     <measures>
-        <field>ObjectsByAccess_1.A</field>
+        <field>ObjectsPerPsets_1.E</field>
         <isDerived>false</isDerived>
-        <label>#Profiles</label>
+        <label>#Objects with ReadAll</label>
         <sortIndex>40</sortIndex>
     </measures>
     <measures>
-        <field>SetupPermsByEntityTy_1.G</field>
+        <field>ObjectsPerPsets_1.D</field>
         <isDerived>false</isDerived>
-        <label>Avg #Perms/Item</label>
+        <label>#Objects with Delete</label>
         <sortIndex>41</sortIndex>
     </measures>
     <measures>
-        <field>SetupPermsByEntityTy_1.A</field>
+        <field>ObjectsPerPsets_1.C</field>
         <isDerived>false</isDerived>
-        <label>#Permissions</label>
+        <label>#Objects with Create</label>
         <sortIndex>42</sortIndex>
     </measures>
     <measures>
-        <field>SetupPermsByEntityTy_1.C</field>
+        <field>ObjectsPerPsets_1.B</field>
         <isDerived>false</isDerived>
-        <label>#Setup Entities</label>
+        <label>#Objects with Edit</label>
         <sortIndex>43</sortIndex>
     </measures>
     <measures>
-        <field>SetupPermsByEntityTy_1.B</field>
+        <field>ObjectsPerPsets_1.A</field>
         <isDerived>false</isDerived>
-        <label>Total #Items</label>
+        <label>#Objects</label>
         <sortIndex>44</sortIndex>
     </measures>
     <measures>
-        <field>SetupPermsByEntityTy_1.E</field>
+        <field>ObjectsPerPsets_1.G</field>
         <isDerived>false</isDerived>
-        <label>#PSets</label>
+        <label>#Objects with ViewAllFields</label>
         <sortIndex>45</sortIndex>
     </measures>
     <measures>
-        <field>SetupPermsByEntityTy_1.F</field>
+        <field>SystemPermsByName_1.B</field>
         <isDerived>false</isDerived>
-        <label>#PSet Groups</label>
+        <label>#Profiles</label>
         <sortIndex>46</sortIndex>
     </measures>
     <measures>
-        <field>SetupPermsByEntityTy_1.D</field>
+        <field>SystemPermsByName_1.D</field>
         <isDerived>false</isDerived>
-        <label>#Profiles</label>
+        <label>#PSet Groups</label>
         <sortIndex>47</sortIndex>
     </measures>
     <measures>
-        <field>SetupByPset_1.A</field>
+        <field>SystemPermsByName_1.C</field>
         <isDerived>false</isDerived>
-        <label>#Perms</label>
+        <label>#PSets</label>
         <sortIndex>48</sortIndex>
+    </measures>
+    <measures>
+        <field>SystemPermsByName_1.A</field>
+        <isDerived>false</isDerived>
+        <label>Total #Items</label>
+        <sortIndex>49</sortIndex>
     </measures>
     <measures>
         <conditionalFormatting>
@@ -358,43 +370,91 @@
         </conditionalFormatting>
         <field>lens_4.A</field>
         <isDerived>false</isDerived>
-        <sortIndex>49</sortIndex>
-    </measures>
-    <measures>
-        <field>TabPermsByName_1.E</field>
-        <isDerived>false</isDerived>
-        <label>#Default Off</label>
         <sortIndex>50</sortIndex>
     </measures>
     <measures>
-        <field>TabPermsByName_1.F</field>
+        <field>SetupByPset_1.A</field>
         <isDerived>false</isDerived>
-        <label>#Default On</label>
+        <label>#Perms</label>
         <sortIndex>51</sortIndex>
     </measures>
     <measures>
-        <field>TabPermsByName_1.A</field>
+        <field>SetupPermsByEntityTy_1.D</field>
         <isDerived>false</isDerived>
-        <label>Total #Items</label>
+        <label>#Profiles</label>
         <sortIndex>52</sortIndex>
     </measures>
     <measures>
-        <field>TabPermsByName_1.D</field>
+        <field>SetupPermsByEntityTy_1.F</field>
         <isDerived>false</isDerived>
-        <label>#PSets</label>
+        <label>#PSet Groups</label>
         <sortIndex>53</sortIndex>
     </measures>
     <measures>
-        <field>TabPermsByName_1.C</field>
+        <field>SetupPermsByEntityTy_1.E</field>
         <isDerived>false</isDerived>
-        <label>#Pset Groups</label>
+        <label>#PSets</label>
         <sortIndex>54</sortIndex>
+    </measures>
+    <measures>
+        <field>SetupPermsByEntityTy_1.B</field>
+        <isDerived>false</isDerived>
+        <label>Total #Items</label>
+        <sortIndex>55</sortIndex>
+    </measures>
+    <measures>
+        <field>SetupPermsByEntityTy_1.C</field>
+        <isDerived>false</isDerived>
+        <label>#Setup Entities</label>
+        <sortIndex>56</sortIndex>
+    </measures>
+    <measures>
+        <field>SetupPermsByEntityTy_1.A</field>
+        <isDerived>false</isDerived>
+        <label>#Permissions</label>
+        <sortIndex>57</sortIndex>
+    </measures>
+    <measures>
+        <field>SetupPermsByEntityTy_1.G</field>
+        <isDerived>false</isDerived>
+        <label>Avg #Perms/Item</label>
+        <sortIndex>58</sortIndex>
     </measures>
     <measures>
         <field>TabPermsByName_1.B</field>
         <isDerived>false</isDerived>
         <label>#Profiles</label>
-        <sortIndex>55</sortIndex>
+        <sortIndex>59</sortIndex>
+    </measures>
+    <measures>
+        <field>TabPermsByName_1.C</field>
+        <isDerived>false</isDerived>
+        <label>#Pset Groups</label>
+        <sortIndex>60</sortIndex>
+    </measures>
+    <measures>
+        <field>TabPermsByName_1.D</field>
+        <isDerived>false</isDerived>
+        <label>#PSets</label>
+        <sortIndex>61</sortIndex>
+    </measures>
+    <measures>
+        <field>TabPermsByName_1.A</field>
+        <isDerived>false</isDerived>
+        <label>Total #Items</label>
+        <sortIndex>62</sortIndex>
+    </measures>
+    <measures>
+        <field>TabPermsByName_1.F</field>
+        <isDerived>false</isDerived>
+        <label>#Default On</label>
+        <sortIndex>63</sortIndex>
+    </measures>
+    <measures>
+        <field>TabPermsByName_1.E</field>
+        <isDerived>false</isDerived>
+        <label>#Default Off</label>
+        <sortIndex>64</sortIndex>
     </measures>
     <type>Asset</type>
     <waveVisualization>SYS_Org_Permissions_Analysis</waveVisualization>

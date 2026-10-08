@@ -1,5 +1,5 @@
 {
-  "version" : "59.0",
+  "version" : "67.0",
   "nodes" : {
     "LOAD_DATASET0" : {
       "action" : "load",
@@ -15,14 +15,15 @@
         "sampleDetails" : {
           "type" : "TopN",
           "sortBy" : [ ]
-        }
+        },
+        "preserveCurrencyFields" : [ ]
       }
     },
     "LOAD_DATASET4" : {
       "action" : "load",
       "sources" : [ ],
       "parameters" : {
-        "fields" : [ "RecordTypeName__c", "Category__c", "RecordTypeId", "Id", "Name", "Ratio__c", "Storage__c", "Count__c", "Used__c", "Limit__c", "CreatedDate" ],
+        "fields" : [ "RecordTypeName__c", "Category__c", "CreatedDate", "RecordTypeId", "Id", "Name", "Ratio__c", "Storage__c", "Count__c", "Used__c", "Limit__c", "Source" ],
         "dataset" : {
           "type" : "analyticsDataset",
           "label" : "SYS Org Storage",
@@ -36,20 +37,19 @@
     },
     "JOIN0" : {
       "action" : "join",
-      "sources" : [ "LOAD_DATASET0", "LOAD_DATASET4" ],
+      "sources" : [ "FORMULA0", "LOAD_DATASET4" ],
       "schema" : {
-        "fields" : [ ],
         "slice" : {
           "mode" : "DROP",
           "ignoreMissingFields" : true,
-          "fields" : [ "SYSOrgStor.RecordTypeName__c", "SYSOrgStor.Category__c", "SYSOrgStor.RecordTypeId", "SYSOrgStor.Name", "SYSOrgStor.Ratio__c", "SYSOrgStor.Storage__c", "SYSOrgStor.Count__c", "SYSOrgStor.Used__c", "SYSOrgStor.Limit__c", "SYSOrgStor.CreatedDate" ]
+          "fields" : [ "OS.RecordTypeName__c", "OS.Category__c", "OS.RecordTypeId", "OS.Name", "OS.Ratio__c", "OS.Storage__c", "OS.Count__c", "OS.Used__c", "OS.Limit__c", "OS.CreatedDate" ]
         }
       },
       "parameters" : {
         "joinType" : "LOOKUP",
-        "leftKeys" : [ "Id" ],
-        "rightQualifier" : "SYSOrgStor",
-        "rightKeys" : [ "Id" ]
+        "leftKeys" : [ "Id", "Source" ],
+        "rightQualifier" : "OS",
+        "rightKeys" : [ "Id", "Source" ]
       }
     },
     "FILTER0" : {
@@ -58,7 +58,7 @@
       "parameters" : {
         "filterExpressions" : [ {
           "type" : "TEXT",
-          "field" : "SYSOrgStor.Id",
+          "field" : "OS.Id",
           "operator" : "IS_NULL",
           "operands" : [ ]
         } ]
@@ -75,11 +75,10 @@
       "action" : "schema",
       "sources" : [ "FILTER0" ],
       "parameters" : {
-        "fields" : [ ],
         "slice" : {
           "mode" : "DROP",
           "ignoreMissingFields" : true,
-          "fields" : [ "SYSOrgStor.Id" ]
+          "fields" : [ "OS.Id", "OS.Source" ]
         }
       }
     },
@@ -95,6 +94,21 @@
           "folderName" : "SYS_Monitoring"
         },
         "measuresToCurrencies" : [ ]
+      }
+    },
+    "FORMULA0" : {
+      "action" : "formula",
+      "sources" : [ "LOAD_DATASET0" ],
+      "parameters" : {
+        "expressionType" : "SQL",
+        "fields" : [ {
+          "type" : "TEXT",
+          "name" : "Source",
+          "label" : "Source",
+          "formulaExpression" : "'Local'",
+          "precision" : 25,
+          "defaultValue" : ""
+        } ]
       }
     }
   },
@@ -112,8 +126,8 @@
       "LOAD_DATASET4" : {
         "label" : "SYS Org Storage",
         "type" : "LOAD_DATASET",
-        "top" : 252,
-        "left" : 252.10000000000002,
+        "top" : 252.10000000000002,
+        "left" : 532.1,
         "parameters" : {
           "sampleSize" : 2000
         }
@@ -122,29 +136,29 @@
         "label" : "Identify existing rows",
         "description" : "",
         "type" : "JOIN",
-        "top" : 112.1,
-        "left" : 252.2
+        "top" : 112.30000000000001,
+        "left" : 531.7
       },
       "FILTER0" : {
         "label" : "Keep new rows",
         "description" : "",
         "type" : "FILTER",
-        "top" : 112,
-        "left" : 392
+        "top" : 112.19999999999999,
+        "left" : 672.2
       },
       "APPEND0" : {
         "label" : "Merge all rows",
         "description" : "",
         "type" : "APPEND",
         "top" : 112,
-        "left" : 672
+        "left" : 952
       },
       "TRANSFORM1" : {
         "label" : "Drop Existing Row ID",
         "description" : "",
         "type" : "TRANSFORM",
-        "top" : 112,
-        "left" : 532,
+        "top" : 112.1,
+        "left" : 812.2,
         "graph" : {
           "DROP_FIELDS0" : {
             "label" : "Drop Existing Record ID"
@@ -156,12 +170,28 @@
         "label" : "SYS OrgStorage",
         "description" : "",
         "type" : "OUTPUT",
+        "top" : 112.69999999999999,
+        "left" : 1093.5
+      },
+      "TRANSFORM2" : {
+        "label" : "Init OS",
+        "description" : "",
+        "type" : "TRANSFORM",
         "top" : 112,
-        "left" : 812
+        "left" : 252,
+        "graph" : {
+          "FORMULA0" : {
+            "parameters" : {
+              "type" : "BASE_FORMULA_UI"
+            },
+            "label" : "Init Source"
+          }
+        },
+        "connectors" : [ ]
       }
     },
     "connectors" : [ {
-      "source" : "LOAD_DATASET0",
+      "source" : "TRANSFORM2",
       "target" : "JOIN0"
     }, {
       "source" : "LOAD_DATASET4",
@@ -181,6 +211,9 @@
     }, {
       "source" : "APPEND0",
       "target" : "OUTPUT1"
+    }, {
+      "source" : "LOAD_DATASET0",
+      "target" : "TRANSFORM2"
     } ],
     "hiddenColumns" : [ ]
   },

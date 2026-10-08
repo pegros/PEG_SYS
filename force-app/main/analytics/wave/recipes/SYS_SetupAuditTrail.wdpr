@@ -1,5 +1,5 @@
 {
-  "version" : "60.0",
+  "version" : "67.0",
   "nodes" : {
     "LOAD_DATASET0" : {
       "action" : "load",
@@ -15,7 +15,8 @@
         "sampleDetails" : {
           "type" : "TopN",
           "sortBy" : [ ]
-        }
+        },
+        "preserveCurrencyFields" : [ ]
       }
     },
     "LOAD_DATASET1" : {
@@ -32,7 +33,8 @@
         "sampleDetails" : {
           "type" : "TopN",
           "sortBy" : [ ]
-        }
+        },
+        "preserveCurrencyFields" : [ ]
       }
     },
     "JOIN0" : {
@@ -85,7 +87,8 @@
         "sampleDetails" : {
           "type" : "TopN",
           "sortBy" : [ ]
-        }
+        },
+        "preserveCurrencyFields" : [ ]
       }
     },
     "OUTPUT0" : {
@@ -98,12 +101,13 @@
           "label" : "SYS SetupAuditTrail",
           "name" : "SYS_SetupAuditTrail",
           "folderName" : "SYS_Monitoring"
-        }
+        },
+        "measuresToCurrencies" : [ ]
       }
     },
     "FORMULA0" : {
       "action" : "formula",
-      "sources" : [ "JOIN0" ],
+      "sources" : [ "FORMULA4" ],
       "parameters" : {
         "expressionType" : "SQL",
         "fields" : [ {
@@ -160,6 +164,21 @@
           "defaultValue" : ""
         } ]
       }
+    },
+    "FORMULA4" : {
+      "action" : "formula",
+      "sources" : [ "JOIN0" ],
+      "parameters" : {
+        "expressionType" : "SQL",
+        "fields" : [ {
+          "type" : "TEXT",
+          "name" : "Source",
+          "label" : "Source",
+          "formulaExpression" : "'Local'",
+          "precision" : 25,
+          "defaultValue" : ""
+        } ]
+      }
     }
   },
   "ui" : {
@@ -167,8 +186,8 @@
       "LOAD_DATASET0" : {
         "label" : "SetupAuditTrail",
         "type" : "LOAD_DATASET",
-        "top" : 112,
-        "left" : 112,
+        "top" : 252.10000000000002,
+        "left" : 111.69999999999999,
         "parameters" : {
           "sampleSize" : 2000
         }
@@ -176,8 +195,8 @@
       "LOAD_DATASET1" : {
         "label" : "User",
         "type" : "LOAD_DATASET",
-        "top" : 252,
-        "left" : 112,
+        "top" : 112.19999999999999,
+        "left" : 112.30000000000001,
         "parameters" : {
           "sampleSize" : 2000
         }
@@ -186,21 +205,21 @@
         "label" : "Audit Trail + User",
         "description" : "",
         "type" : "JOIN",
-        "top" : 112,
+        "top" : 252.10000000000002,
         "left" : 252
       },
       "JOIN1" : {
         "label" : "User + Profile",
         "description" : "",
         "type" : "JOIN",
-        "top" : 252,
+        "top" : 112,
         "left" : 252
       },
       "LOAD_DATASET2" : {
         "label" : "Profile",
         "type" : "LOAD_DATASET",
-        "top" : 392,
-        "left" : 112,
+        "top" : 112.30000000000001,
+        "left" : 392.1,
         "parameters" : {
           "sampleSize" : 2000
         }
@@ -209,15 +228,15 @@
         "label" : "SYS SetupAuditTrail",
         "description" : "",
         "type" : "OUTPUT",
-        "top" : 112,
-        "left" : 532
+        "top" : 252.39999999999998,
+        "left" : 812.2
       },
       "TRANSFORM0" : {
         "label" : "Finalize Audit Trail",
         "description" : "",
         "type" : "TRANSFORM",
-        "top" : 112,
-        "left" : 392,
+        "top" : 252.3,
+        "left" : 671.5,
         "graph" : {
           "FORMULA0" : {
             "parameters" : {
@@ -254,6 +273,22 @@
           "source" : "FORMULA2",
           "target" : "FORMULA3"
         } ]
+      },
+      "TRANSFORM1" : {
+        "label" : "Init AT",
+        "description" : "",
+        "type" : "TRANSFORM",
+        "top" : 252,
+        "left" : 392,
+        "graph" : {
+          "FORMULA4" : {
+            "parameters" : {
+              "type" : "BASE_FORMULA_UI"
+            },
+            "label" : "Init Source"
+          }
+        },
+        "connectors" : [ ]
       }
     },
     "connectors" : [ {
@@ -272,8 +307,11 @@
       "source" : "TRANSFORM0",
       "target" : "OUTPUT0"
     }, {
-      "source" : "JOIN0",
+      "source" : "TRANSFORM1",
       "target" : "TRANSFORM0"
+    }, {
+      "source" : "JOIN0",
+      "target" : "TRANSFORM1"
     } ],
     "hiddenColumns" : [ ]
   },

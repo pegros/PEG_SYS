@@ -1,5 +1,5 @@
 {
-  "version" : "59.0",
+  "version" : "67.0",
   "nodes" : {
     "LOAD_DATASET1" : {
       "action" : "load",
@@ -15,7 +15,8 @@
         "sampleDetails" : {
           "type" : "TopN",
           "sortBy" : [ ]
-        }
+        },
+        "preserveCurrencyFields" : [ ]
       }
     },
     "OUTPUT0" : {
@@ -36,7 +37,7 @@
       "action" : "load",
       "sources" : [ ],
       "parameters" : {
-        "fields" : [ "CreatedDate", "Id", "Name", "Limit__c", "Value__c", "Ratio__c" ],
+        "fields" : [ "CreatedDate", "Id", "Name", "Ratio__c", "Limit__c", "Value__c", "Source" ],
         "dataset" : {
           "type" : "analyticsDataset",
           "label" : "SYS Org Limits",
@@ -45,7 +46,8 @@
         "sampleDetails" : {
           "type" : "TopN",
           "sortBy" : [ ]
-        }
+        },
+        "preserveCurrencyFields" : [ ]
       }
     },
     "DROP_FIELDS1" : {
@@ -56,26 +58,26 @@
         "slice" : {
           "mode" : "DROP",
           "ignoreMissingFields" : true,
-          "fields" : [ "SYSOrgLimi.Id" ]
+          "fields" : [ "OL.Id", "OL.Source" ]
         }
       }
     },
     "JOIN1" : {
       "action" : "join",
-      "sources" : [ "LOAD_DATASET1", "LOAD_DATASET5" ],
+      "sources" : [ "FORMULA0", "LOAD_DATASET5" ],
       "schema" : {
         "fields" : [ ],
         "slice" : {
           "mode" : "DROP",
           "ignoreMissingFields" : true,
-          "fields" : [ "SYSOrgLimi.CreatedDate", "SYSOrgLimi.Name", "SYSOrgLimi.Limit__c", "SYSOrgLimi.Value__c", "SYSOrgLimi.Ratio__c" ]
+          "fields" : [ "OL.CreatedDate", "OL.Name", "OL.Limit__c", "OL.Value__c", "OL.Ratio__c" ]
         }
       },
       "parameters" : {
         "joinType" : "LOOKUP",
-        "leftKeys" : [ "Id" ],
-        "rightQualifier" : "SYSOrgLimi",
-        "rightKeys" : [ "Id" ]
+        "leftKeys" : [ "Id", "Source" ],
+        "rightQualifier" : "OL",
+        "rightKeys" : [ "Id", "Source" ]
       }
     },
     "FILTER1" : {
@@ -84,7 +86,7 @@
       "parameters" : {
         "filterExpressions" : [ {
           "type" : "TEXT",
-          "field" : "SYSOrgLimi.Id",
+          "field" : "OL.Id",
           "operator" : "IS_NULL",
           "operands" : [ ]
         } ]
@@ -96,6 +98,21 @@
       "parameters" : {
         "fieldMappings" : [ ]
       }
+    },
+    "FORMULA0" : {
+      "action" : "formula",
+      "sources" : [ "LOAD_DATASET1" ],
+      "parameters" : {
+        "expressionType" : "SQL",
+        "fields" : [ {
+          "type" : "TEXT",
+          "name" : "Source",
+          "label" : "Source",
+          "formulaExpression" : "'Local'",
+          "precision" : 25,
+          "defaultValue" : ""
+        } ]
+      }
     }
   },
   "ui" : {
@@ -103,8 +120,8 @@
       "LOAD_DATASET1" : {
         "label" : "SYS_OrgLimitSnapshot__c",
         "type" : "LOAD_DATASET",
-        "top" : 112.6,
-        "left" : 112.1,
+        "top" : 252.3,
+        "left" : 112,
         "parameters" : {
           "sampleSize" : 2000
         }
@@ -113,14 +130,14 @@
         "label" : "SYS OrgLimits",
         "description" : "",
         "type" : "OUTPUT",
-        "top" : 111.9,
-        "left" : 812.1
+        "top" : 252.2,
+        "left" : 1091.1
       },
       "LOAD_DATASET5" : {
         "label" : "SYS Org Limits",
         "type" : "LOAD_DATASET",
-        "top" : 252.3,
-        "left" : 252,
+        "top" : 112.1,
+        "left" : 532,
         "parameters" : {
           "sampleSize" : 2000
         }
@@ -129,8 +146,8 @@
         "label" : "Drop Existing Row ID",
         "description" : "",
         "type" : "TRANSFORM",
-        "top" : 112.1,
-        "left" : 532.1,
+        "top" : 252.10000000000002,
+        "left" : 811.8,
         "graph" : {
           "DROP_FIELDS1" : {
             "label" : "Drop Existing RecordID"
@@ -142,29 +159,45 @@
         "label" : "Identify existing rows",
         "description" : "",
         "type" : "JOIN",
-        "top" : 112.9,
-        "left" : 252.10000000000002
+        "top" : 252.10000000000002,
+        "left" : 532
       },
       "FILTER1" : {
         "label" : "Keep new rows",
         "description" : "",
         "type" : "FILTER",
-        "top" : 112.5,
-        "left" : 392.2
+        "top" : 252.2,
+        "left" : 672.1
       },
       "APPEND1" : {
         "label" : "Merge all rows",
         "description" : "",
         "type" : "APPEND",
-        "top" : 111.9,
-        "left" : 672.1
+        "top" : 252.2,
+        "left" : 951.7
+      },
+      "TRANSFORM1" : {
+        "label" : "Init OL",
+        "description" : "",
+        "type" : "TRANSFORM",
+        "top" : 252,
+        "left" : 252.10000000000002,
+        "graph" : {
+          "FORMULA0" : {
+            "parameters" : {
+              "type" : "BASE_FORMULA_UI"
+            },
+            "label" : "Init Source"
+          }
+        },
+        "connectors" : [ ]
       }
     },
     "connectors" : [ {
       "source" : "APPEND1",
       "target" : "OUTPUT0"
     }, {
-      "source" : "LOAD_DATASET1",
+      "source" : "TRANSFORM1",
       "target" : "JOIN1"
     }, {
       "source" : "LOAD_DATASET5",
@@ -181,6 +214,9 @@
     }, {
       "source" : "LOAD_DATASET5",
       "target" : "APPEND1"
+    }, {
+      "source" : "LOAD_DATASET1",
+      "target" : "TRANSFORM1"
     } ],
     "hiddenColumns" : [ ]
   },

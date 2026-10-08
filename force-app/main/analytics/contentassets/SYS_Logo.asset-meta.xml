@@ -4,17 +4,13 @@
     <language>en_US</language>
     <masterLabel>SYS_Logo</masterLabel>
     <relationships>
-        <insightsApplication>
-            <access>VIEWER</access>
-            <name>SYS_Monitoring</name>
-        </insightsApplication>
         <organization>
             <access>VIEWER</access>
         </organization>
     </relationships>
     <versions>
         <version>
-            <number>2</number>
+            <number>1</number>
             <pathOnClient>SYS_Logo.png</pathOnClient>
         </version>
     </versions>

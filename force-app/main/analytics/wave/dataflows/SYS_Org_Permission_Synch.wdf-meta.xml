@@ -3,6 +3,6 @@
     <content xsi:nil="true"/>
     <application>WAVE_PUBLIC_DATAFLOWS</application>
     <dataflowType>RecipeV3</dataflowType>
-    <description>Recette SYS Org Permission Snapshot Synch_recipe</description>
-    <masterLabel>SYS Org Permission Snapshot Synch_recipe</masterLabel>
+    <description>Recipe SYS Org Permission Synch_recipe</description>
+    <masterLabel>SYS Org Permission Synch_recipe</masterLabel>
 </WaveDataflow>
