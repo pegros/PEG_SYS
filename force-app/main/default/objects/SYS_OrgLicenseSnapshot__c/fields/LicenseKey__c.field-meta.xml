@@ -3,7 +3,7 @@
     <fullName>LicenseKey__c</fullName>
     <externalId>false</externalId>
     <label>License Key</label>
-    <length>64</length>
+    <length>128</length>
     <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Text</type>
